@@ -1,0 +1,43 @@
+.siteLinks {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 25px;
+  a {
+    font-size: var(--fontSizeBig);
+  }
+}
+.siteName {
+  color: #e9d8c1 !important;
+  transition: color 0.3s ease-in-out;
+  &:hover {
+    color: #9f9382 !important;
+  }
+}
+.logo {
+  display: block;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  margin: 0 10px 0 0;
+  > img {
+    display: block;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .siteLinks {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+    width: 100%;
+    margin-right: 0;
+  }
+  .logo {
+    width: 90px;
+    height: 90px;
+    margin: 0 0 20px 20px;
+  }
+}

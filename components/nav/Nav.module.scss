@@ -1,0 +1,30 @@
+.nav {
+  ul {
+    background: var(--navBg);
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px;
+    li {
+      margin-left: 32px;
+      display: flex;
+      align-items: center;
+    }
+  }
+  button,
+  a {
+    font-family: "Bowlby One SC";
+    font-size: var(--fontSizeSmall);
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    > span {
+      margin-right: 7px !important;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+}
