@@ -1,8 +1,10 @@
 ---
 layout: default
 title: Callouts
-parent: UI Components
-nav_order: 7
+parent: Typography
+grand_parent: UI Components
+permalink: /docs/ui-components/typography/callouts/
+nav_order: 1
 ---
 
 # Callouts
@@ -18,7 +20,7 @@ Common kinds of callouts include `highlight`, `important`, `new`, `note`, and `w
 {: .warning }
 These callout names are *not* pre-defined by the theme: you need to define your own names.
 
-When you have [configured]({% link docs/configuration.md %}#callouts) the  `color` and (optional) `title` for a callout, you can apply it to a paragraph, or to a block quote with several paragraphs, as illustrated below.[^postfix]
+`color` and (optional) `title` for a callout, you can apply it to a paragraph, or to a block quote with several paragraphs, as illustrated below.[^postfix]
 
 [^postfix]:
     You can put the callout markup either before or after its content.

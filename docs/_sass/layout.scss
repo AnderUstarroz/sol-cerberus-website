@@ -4,7 +4,6 @@
   z-index: 0;
   display: flex;
   flex-wrap: wrap;
-  background: rgba(40,37,36,.6);
 
   @include mq(md) {
     flex-flow: column nowrap;
@@ -42,6 +41,7 @@
 .main-content-wrap {
   @include container;
 
+  background: rgba(40,37,36,.2);
   padding-top: $gutter-spacing-sm;
   padding-bottom: $gutter-spacing-sm;
 
@@ -85,6 +85,7 @@
 
 .site-nav {
   display: none;
+  background: rgba(40,37,36,.6);
 
   &.nav-open {
     display: block;
@@ -192,6 +193,7 @@ body {
 .site-footer {
   @include container;
 
+  background: rgba(40,37,36,.6);
   position: absolute;
   bottom: 0;
   left: 0;
@@ -210,4 +212,38 @@ body {
   width: $sp-5;
   height: $sp-5;
   color: $link-color;
+}
+
+.prev-next{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  > div{ 
+    > p{
+      margin: 0;
+    }
+    a{
+      position: relative;
+    }
+    &:first-of-type{
+      padding-left: 30px;
+      a::before{
+        content: "<";
+        position: absolute;
+        left: -30px;
+        top: -15px;
+        font-size: 35px;
+      }
+    }
+    &:last-of-type{
+      padding-right: 30px;
+      a::before{
+        content:  ">";
+        position: absolute;
+        right: -30px;
+        top: -15px;
+        font-size: 35px;
+      }
+    }
+  }
 }

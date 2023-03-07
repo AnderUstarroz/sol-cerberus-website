@@ -2,6 +2,7 @@
 layout: default
 title: Typography
 parent: UI Components
+has_children: true
 nav_order: 1
 ---
 

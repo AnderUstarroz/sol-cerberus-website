@@ -4,15 +4,16 @@ import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import { DEFAULT_ANIMATION } from "../components/utils/animation";
 import { ReactNode, useState } from "react";
+import Link from "next/link";
 
 // https://www.shutterstock.com/video/clip-28255210-sun-surface-solar-flares
 // https://www.google.com/search?q=sun+burning+video&rlz=1C5CHFA_enES984ES984&oq=sun+burning+video&aqs=chrome..69i57j0i19i512l9.2381j0j7&sourceid=chrome&ie=UTF-8#fpstate=ive&vld=cid:e9eb4c89,vid:WBMl-JV0DoE
 
 const Logo = dynamic(() => import("../components/logo"));
-// const Icon = dynamic(() => import("../components/icon"));
-// const Input = dynamic(() => import("../components/input"));
+const Icon = dynamic(() => import("../components/icon"));
+// const Input = dynamic(() => import("../components/input"));s
 const Modal = dynamic(() => import("../components/modal"));
-// const Button = dynamic(() => import("../components/button"));
+const Button = dynamic(() => import("../components/button"));
 
 export default function Home() {
   const [modals, setModals] = useState({
@@ -42,60 +43,64 @@ export default function Home() {
           <h1>
             <span>Sol</span> Cerberus
           </h1>
-          <p>The watchdog of your Solana programs</p>
+          <p>Solana's blockchain watch dog</p>
           <section>
-            <h2>Description</h2>
-            <fieldset className={styles.desc}>
-              <p>some text:</p>
-              <ul className="sqList">
-                <li>aaaa</li>
-                <li>bbbb</li>
-                <li>ccccc</li>
-              </ul>
-              <p>Sample text</p>
-            </fieldset>
-          </section>
-          <section>
-            <h2>Section</h2>
-            <fieldset>
-              <p>blablabla</p>
-              <table>
-                <thead>
-                  <tr>
-                    <th>a</th>
-                    <th>b</th>
-                    <th>c</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <motion.tr {...DEFAULT_ANIMATION}>
-                    <td>
-                      <strong>aaaa</strong>
-                    </td>
-                    <td>bbb</td>
-                    <td>ccccc</td>
-                    <td>dd</td>
-                  </motion.tr>
-                </tbody>
-              </table>
-            </fieldset>
-          </section>
-          <section>
-            <h2>Another special section</h2>
             <div className={styles.shapeBox}>
+              <div>
+                <div className="">
+                  <div className="txtCenter">
+                    <Icon
+                      cType="shield"
+                      width={100}
+                      height={100}
+                      color="#655d5c"
+                    />
+                  </div>
+                  <h2 className={styles.h2internal}>Armored DAPPs</h2>
+                  <p className={styles.textDesc}>
+                    Sol Cerberus is a fine-grained RBAC (Role-based access
+                    control) system designed to enhance the security of Solana
+                    Blockchain applications.
+                  </p>
+                </div>
+                <div className="aligned centered">
+                  <Link href="https://docs.solcerberus.com/">
+                    <Button className="big button1">Learn more</Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h2>Wallet & NFT access out of the box</h2>
+            <fieldset className={`${styles.desc} ${styles.strongW}`}>
               <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book. It has
-                survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged. It was
-                popularised in the 1960s with the release of Letraset sheets
-                containing Lorem Ipsum passages, and more recently with desktop
-                publishing software like Aldus PageMaker including versions of
-                Lorem Ipsum.
+                With Sol Cerberus, you can effortlessly build bulletproof
+                decentralized apps in Web 3.0, but also includes built-in
+                authentication for added convenience:
               </p>
+              <ul className="sqList">
+                <li>
+                  <strong>Wallet:</strong> Grant access to specific Wallet.
+                </li>
+                <li>
+                  <strong>NFT:</strong> Grant access to owners of specific NFTs.
+                </li>
+                <li>
+                  <strong>NFT collection:</strong> Grant access to owners of
+                  NFTs which belongs to specific collections.
+                </li>
+              </ul>
+            </fieldset>
+          </section>
+          <section>
+            <h3 className="txtCenter mb-big">
+              Would you like a practical example?
+            </h3>
+            <div className="aligned centered">
+              <Link href="https://demo.solcerberus.com/">
+                <Button className="big">View Demo</Button>
+              </Link>
             </div>
           </section>
         </motion.div>

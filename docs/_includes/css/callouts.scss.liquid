@@ -29,6 +29,8 @@ p.{{ callout[0] }}, blockquote.{{ callout[0] }} {
     &::before {
         color: white;
         content: "{{ callout[1].title }}";
+        font-family: "Bowlby One SC", cursive;
+        text-shadow: 0 1px 1px #000000;
         display: block;
         font-weight: bold;
         text-transform: uppercase;
@@ -44,7 +46,6 @@ p.{{ callout[0] }}, blockquote.{{ callout[0] }} {
       padding-bottom: .125rem;
     }
 }
-
 p.{{ callout[0] }}-title, blockquote.{{ callout[0] }}-title {
     background: ${{ callout[1].color  }};
     border-left: $border-radius solid rgba(255,255,255, 0.3);
