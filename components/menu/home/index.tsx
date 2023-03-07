@@ -65,9 +65,9 @@ export default function HomeMenu({ toggle }: HomeMenuType) {
           </Button>
         </div>
       </MenuItem> */}
-      <MenuItem whileTap={{}} whileHover={{}}>
+      {/* <MenuItem whileTap={{}} whileHover={{}}>
         <Button cType="wallet" className="btnRadius2" />
-      </MenuItem>
+      </MenuItem> */}
     </motion.ul>
   );
 }

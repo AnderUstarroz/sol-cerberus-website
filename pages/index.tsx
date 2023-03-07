@@ -40,7 +40,7 @@ export default function Home() {
         <motion.div className={styles.container} {...DEFAULT_ANIMATION}>
           <Logo />
           <h1>
-            <span>Sol</span> Cerberus Demo
+            <span>Sol</span> Cerberus
           </h1>
           <p>The watchdog of your Solana programs</p>
           <section>
@@ -56,7 +56,7 @@ export default function Home() {
             </fieldset>
           </section>
           <section>
-            <h2>Another Section</h2>
+            <h2>Section</h2>
             <fieldset>
               <p>blablabla</p>
               <table>
@@ -80,6 +80,23 @@ export default function Home() {
                 </tbody>
               </table>
             </fieldset>
+          </section>
+          <section>
+            <h2>Another special section</h2>
+            <div className={styles.shapeBox}>
+              <p>
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry's standard dummy
+                text ever since the 1500s, when an unknown printer took a galley
+                of type and scrambled it to make a type specimen book. It has
+                survived not only five centuries, but also the leap into
+                electronic typesetting, remaining essentially unchanged. It was
+                popularised in the 1960s with the release of Letraset sheets
+                containing Lorem Ipsum passages, and more recently with desktop
+                publishing software like Aldus PageMaker including versions of
+                Lorem Ipsum.
+              </p>
+            </div>
           </section>
         </motion.div>
       </AnimatePresence>

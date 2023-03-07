@@ -1,0 +1,88 @@
+// Typography
+// stylelint-disable selector-no-type, selector-max-type, selector-max-specificity, selector-max-id
+@font-face {
+  font-family: "Bowlby One SC";
+  font-style: normal;
+  font-weight: 400;
+  src: url("#{$rootPath}/assets/fonts/Bowlby_One_SC/BowlbyOneSC-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("#{$rootPath}/assets/fonts/Poppins/Poppins-Medium.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("#{$rootPath}/assets/fonts/Poppins/Poppins-Bold.ttf");
+  font-weight: 700;
+  font-style: normal;
+}
+
+h1,h2,h3,h4,h5,.title-font{
+  font-family: "Bowlby One SC", cursive;
+  text-shadow: 0px 2px 0px #000000;
+}
+
+h1,
+.text-alpha {
+  @include fs-8;
+
+  font-weight: 300;
+}
+
+h2,
+.text-beta,
+#toctitle {
+  @include fs-6;
+}
+
+h3,
+.text-gamma {
+  @include fs-5;
+}
+
+h4,
+.text-delta {
+  @include fs-2;
+
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+h4 code {
+  text-transform: none;
+}
+
+h5,
+.text-epsilon {
+  @include fs-3;
+}
+
+h6,
+.text-zeta {
+  @include fs-2;
+}
+
+.text-small {
+  @include fs-2;
+}
+
+.text-mono {
+  font-family: $mono-font-family !important;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
