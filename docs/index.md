@@ -9,18 +9,20 @@ permalink: /
 # Introduction
 {: .fs-9 }
 
-Sol Cerberus is a fine-grained [RBAC] (Role-based access control) system designed to enhance the security of Solana Blockchain applications.
+Sol Cerberus is a fine-grained [RBAC] (Role-based access control) system designed to enhance the security of Solana applications.
 {: .fs-6 .fw-300 }
 
 [Get started](#getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
 [View Demo][Demo]{: .btn .btn-green .fs-5 .mb-4 .mb-md-0 }
 
 ---
-In the current digital era, ensuring data privacy and security in the Blockchain has become a critical concern. With Sol Cerberus, developers can effortlessly meet these standards without having to manually implement complicated access control policies by themselves. 
 
-## How does it improve security?
+In the current digital era, ensuring data privacy and security on-chain has become a critical concern. With Sol Cerberus, developers can easily meet these standards without having to manually implement complicated access control policies by themselves.
 
-Sol Cerberus empowers you to customize access control policies and restrict access to specific resources based on user roles. By doing so, you can effectively limit the scope of potential security threats and safeguard sensitive data from unauthorized access. 
+
+## How is security improved?
+
+Sol Cerberus empowers you to customize access control policies and restrict access to specific resources based on user roles. By doing so, you can effectively limit the scope of potential security threats and safeguard sensitive data from unauthorized access.
 
 Sol Cerberus automates this entire process abstracting away the complexity and providing intuitive tools for managing roles and permissions.
 
@@ -29,7 +31,7 @@ Sol Cerberus includes built-in authentication for added convenience:
 
 - **Wallet:** Grant access to specific Wallet.
 - **NFT:** Grant access to owners of specific NFTs.
-- **NFT collection:** Grant access to owners of NFTs which belongs to specific collections.
+- **NFT collection:** Grant access to owners of NFTs which belong to specific collections.
 
 ## How does it work?
 Sol Cerberus provides [Rust] and [NPM] packages to easily integrate a powerful [RBAC] system into your [Solana Anchor programs] and frontends. 
@@ -49,7 +51,7 @@ pub mod sol_cerberus_demo {
     ...
 }
 ```
-Of course this is just a simple example, you can define any `role`, `resource` and `permission` in your own DAPPs.
+This is just a simple example. Developers can define any `role`, `resource` and `permission` in their own dApps.
 
 ---
 

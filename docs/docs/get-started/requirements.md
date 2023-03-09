@@ -10,7 +10,7 @@ nav_order: 1
 
 ---
 
-Before installing Sol Cerberus make sure your meet the following requirements:
+Before installing Sol Cerberus make sure you meet the following requirements:
 ## Anchor
 
 | Software       | Version |
