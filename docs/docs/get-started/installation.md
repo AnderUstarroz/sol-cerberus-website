@@ -19,7 +19,7 @@ nav_order: 2
 
 ---
 
-Sol Cerberus integration is divided into two parts, the [Rust Program] and the [Javascript SDK], which facilitates the interaction with the program, allowing the use of a succinct and neat syntax to perform authenticated requests.
+Sol Cerberus integration is divided into two parts, the [Anchor packages] and the [Javascript SDK], which facilitates the interaction with the Sol Cerberus program, allowing the use of a succinct and neat syntax to perform authenticated requests.
 
 ## Anchor installation
 
@@ -28,8 +28,8 @@ Add the following dependencies into the `Cargo.toml` file of your Anchor program
 ```toml
 [dependencies]
 anchor-spl = { version = "0.26.0", features = ["metadata"] }
-sol-cerberus = { version = "0.1.2", features = ["cpi"] }
-sol-cerberus-macros = { version = "0.1.1" }
+sol-cerberus = { version = "0.1.3", features = ["cpi"] }
+sol-cerberus-macros = { version = "0.1.2" }
 mpl-token-metadata = { version = "1.8.3", features = ["no-entrypoint"] }
 solana-program = "1.13.5"
 ```
@@ -63,7 +63,7 @@ The `@metaplex-foundation/js` package is actually optional and only necessary if
 </div>
 </div>
 
-[Rust Program]: https://crates.io/crates/sol-cerberus
+[Anchor packages]: https://crates.io/crates/sol-cerberus
 [Javascript SDK]: https://www.npmjs.com/package/sol-cerberus-js
 [Requirements]: ../requirements
 [Setup]: ../setup

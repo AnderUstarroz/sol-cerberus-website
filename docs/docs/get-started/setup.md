@@ -39,23 +39,38 @@ Use one of the following methods to create your APP ID:
 Copy the resulting string, for instance: `CZE2m73MW8V3APLEs6fhiYxWqxSGJibdxFGdTAzsBj2m`
 
 ## Create Sol Cerberus APP
-The APP need to be created in the blockchain using the `initializeApp()` instruction of the JS SDK. Required the following params:
+The APP need to be created in the blockchain with the `initializeApp()` instruction provided by the [JS SDK]. The following script can be used to initialize a new APP, it requires the following params:
 
 - `id`: The APP ID generated on previous step.
-- `recovery` (Optional): The Public key of some other wallets as a safety measure in case you loss the original wallet used to create the APP.
-- `name` A name to identify your APP.
+- `name` A name to identify your APP (up to 16 characters).
+- `recovery` (Optional): Use a secondary wallet's public key as a backup in case the original wallet used to create this APP is lost.
 
 ```js
 import { Keypair, PublicKey, Connection, clusterApiUrl} from "@solana/web3.js";
-import { sc_app_pda } from "sol-cerberus-js";
+import { solCerberus } from "sol-cerberus-js";
 import * as anchor from "@project-serum/anchor";
 
-
 (async () => {
+  /**
+  * Create a connection.
+  * 
+  * With React use Solana's wallet adapter instead.
+  * Source: https://github.com/solana-labs/wallet-adapter
+  * 
+  *     import { useConnection } from "@solana/wallet-adapter-react";
+  *     const { connection } = useConnection();
+  */
   const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
-  // Or if you prefer using a React component:
-  // const { connection } = useConnection();
-  
+
+  /**
+  * Use your own private key within the Uint8Array.
+  * 
+  * With React use Solana's wallet adapter instead:
+  * Source: https://github.com/solana-labs/wallet-adapter
+  * 
+  *     import { useWallet } from "@solana/wallet-adapter-react";
+  *     const { wallet } = useWallet();
+  */
   const wallet = Keypair.fromSecretKey(
     Uint8Array.from([
       174, 47, 154, 16, 202, 193, 206, 113, 199, 190, 53, 133, 169, 175, 31, 56,
@@ -64,13 +79,10 @@ import * as anchor from "@project-serum/anchor";
       121, 35, 172, 247, 68, 251, 226, 218, 48, 63, 176, 109, 168, 89, 238, 135,
     ])
   ); 
-  // Or if you prefer using a React component:
-  // const { wallet } = useWallet();
-
 
   const provider = new anchor.AnchorProvider(
     connection, 
-    wallet,     // Use wallet.adapter when using react's useWallet()
+    wallet,     // Use wallet.adapter when using React's useWallet()
     anchor.AnchorProvider.defaultOptions()
   )
 
@@ -81,8 +93,8 @@ import * as anchor from "@project-serum/anchor";
   await solCerberus.program.methods
         .initializeApp({
           id: scAppId,
-          recovery: null,       // Recovery wallet (in case you lose access)
           name: "My auth app",  // up to 16 characters
+          recovery: null,       // Recovery wallet (backup)
         })
         .accounts({
           app: await solCerberus.getAppPda(),
@@ -91,9 +103,9 @@ import * as anchor from "@project-serum/anchor";
 })();
 
 ```
-Now your Sol Cerberus APP exists in the blockchain and is ready to assign Roles.
+Check out a working example from our demo program: [Create APP](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/1_initialize_demo.ts#L23-L32).
 
-## Add APP ID to my Anchor program
+## Adding APP ID to an Anchor program
 
 Now we need to add the generated ID into our Anchor program. Create a constant called `SOL_CERBERUS_APP_ID` within the `lib.rs` file located at `./programs/NAME-OF-YOUR-PROGRAM/src/lib.rs` of your anchor program:
 
@@ -120,9 +132,12 @@ pub mod my_anchor_program {
 [Installation]
 </div>
 <div markdown="1">
+[Assign roles]
 </div>
 </div>
 
 [Solana CLI]: https://docs.solana.com/es/wallet-guide/paper-wallet#seed-phrase-generation
+[JS SDK]: https://www.npmjs.com/package/sol-cerberus-js
 [web3.js package]: https://solana-labs.github.io/solana-web3.js/
 [Installation]: ../installation
+[Assign roles]: ../assign-roles

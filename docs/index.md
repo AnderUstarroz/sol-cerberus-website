@@ -12,7 +12,7 @@ permalink: /
 Sol Cerberus is a fine-grained [RBAC] (Role-based access control) system designed to enhance the security of Solana applications.
 {: .fs-6 .fw-300 }
 
-[Get started](#getting-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Get started](/docs/get-started){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
 [View Demo][Demo]{: .btn .btn-green .fs-5 .mb-4 .mb-md-0 }
 
 ---

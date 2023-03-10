@@ -43,7 +43,7 @@ export default function Home() {
           <h1>
             <span>Sol</span> Cerberus
           </h1>
-          <p>Solana's blockchain watch dog</p>
+          <p>Solana's on-chain watch dog</p>
           <section>
             <div className={styles.shapeBox}>
               <div>
@@ -88,7 +88,7 @@ export default function Home() {
                 </li>
                 <li>
                   <strong>NFT collection:</strong> Grant access to owners of
-                  NFTs which belongs to specific collections.
+                  NFTs which belong to specific collections.
                 </li>
               </ul>
             </fieldset>
