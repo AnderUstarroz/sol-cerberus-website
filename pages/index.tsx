@@ -43,7 +43,7 @@ export default function Home() {
           <h1>
             <span>Sol</span> Cerberus
           </h1>
-          <p>Solana's on-chain watch dog</p>
+          <p>The new authority</p>
           <section>
             <div className={styles.shapeBox}>
               <div>
@@ -75,9 +75,8 @@ export default function Home() {
             <h2>Wallet & NFT access out of the box</h2>
             <fieldset className={`${styles.desc} ${styles.strongW}`}>
               <p>
-                With Sol Cerberus, you can effortlessly build bulletproof
-                decentralized apps in Web 3.0, but also includes built-in
-                authentication for added convenience:
+                With Sol Cerberus, you can effortlessly build bulletproof dApps
+                in Web 3.0, but also includes built-in authentication:
               </p>
               <ul className="sqList">
                 <li>

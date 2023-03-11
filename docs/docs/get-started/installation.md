@@ -43,7 +43,7 @@ To install the package add the following dependencies into the `package.json` fi
 ```json
 {
   "dependencies": {
-    "sol-cerberus-js": "^0.0.3"
+    "sol-cerberus-js": "latest"
     "@metaplex-foundation/js": "^0.18.3",
   },
 }

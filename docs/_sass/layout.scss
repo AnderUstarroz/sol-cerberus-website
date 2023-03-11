@@ -214,6 +214,9 @@ body {
   color: $link-color;
 }
 
+.inline-block{
+  display: inline-block;
+}
 .prev-next{
   display: flex;
   justify-content: space-between;
