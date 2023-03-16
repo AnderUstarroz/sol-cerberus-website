@@ -14,6 +14,9 @@ const Icon = dynamic(() => import("../components/icon"));
 // const Input = dynamic(() => import("../components/input"));s
 const Modal = dynamic(() => import("../components/modal"));
 const Button = dynamic(() => import("../components/button"));
+const ReactPlayer = dynamic(() => import("react-player/youtube"), {
+  ssr: false,
+});
 
 export default function Home() {
   const [modals, setModals] = useState({
@@ -36,6 +39,33 @@ export default function Home() {
       <Head>
         <title>Sol Cerberus</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content="The new authority for permission management"
+        />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:domain" content="http://localhost:3000" />
+        <meta property="og:url" content="https://solcerberus.com" />
+        <meta name="twitter:url" content="https://solcerberus.com" />
+        <meta property="og:title" content="Sol Cerberus" />
+        <meta name="twitter:title" content="Sol Cerberus" />
+        <meta
+          property="og:image"
+          content="https://raw.githubusercontent.com/AnderUstarroz/sol-cerberus-website/main/public/images/logo.webp"
+        />
+        <meta
+          name="twitter:image"
+          content="https://raw.githubusercontent.com/AnderUstarroz/sol-cerberus-website/main/public/images/logo.webp"
+        />
+        <meta
+          name="twitter:description"
+          content="The new authority for permission management"
+        />
+        <meta
+          property="og:description"
+          content="The new authority for permission management"
+        />
       </Head>
       <AnimatePresence>
         <motion.div className={styles.container} {...DEFAULT_ANIMATION}>
@@ -72,6 +102,26 @@ export default function Home() {
             </div>
           </section>
           <section>
+            <h2>Presentation</h2>
+            <div className={styles.videoWrapper}>
+              <ReactPlayer
+                width="100%"
+                height="100%"
+                heigh="auto"
+                url="https://www.youtube.com/watch?v=ryE8Rhfc47I"
+                controls={true}
+              />
+            </div>
+            <h3 className="txtCenter mb-big">
+              Want to see Sol Cerberus in action?
+            </h3>
+            <div className="aligned centered">
+              <Link href="https://demo.solcerberus.com/">
+                <Button className="big">View Demo</Button>
+              </Link>
+            </div>
+          </section>
+          <section>
             <h2>Wallet & NFT access out of the box</h2>
             <fieldset className={`${styles.desc} ${styles.strongW}`}>
               <p>
@@ -91,16 +141,6 @@ export default function Home() {
                 </li>
               </ul>
             </fieldset>
-          </section>
-          <section>
-            <h3 className="txtCenter mb-big">
-              Would you like a practical example?
-            </h3>
-            <div className="aligned centered">
-              <Link href="https://demo.solcerberus.com/">
-                <Button className="big">View Demo</Button>
-              </Link>
-            </div>
           </section>
         </motion.div>
       </AnimatePresence>
