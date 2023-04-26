@@ -27,11 +27,9 @@ Add the following dependencies into the `Cargo.toml` file of your Anchor program
 
 ```toml
 [dependencies]
-anchor-spl = { version = "0.26.0", features = ["metadata"] }
-sol-cerberus = { version = "0.1.3", features = ["cpi"] }
-sol-cerberus-macros = { version = "0.1.2" }
-mpl-token-metadata = { version = "1.8.3", features = ["no-entrypoint"] }
-solana-program = "1.13.5"
+anchor-spl = { version = "0.27.0", features = ["metadata"] }
+sol-cerberus = { version = "0.1.5", features = ["cpi"] }
+solana-program = "1.15.2"
 ```
 
 ## Frontend installation

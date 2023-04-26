@@ -125,12 +125,12 @@ export default function Home() {
             <h2>Wallet & NFT access out of the box</h2>
             <fieldset className={`${styles.desc} ${styles.strongW}`}>
               <p>
-                With Sol Cerberus, you can effortlessly build bulletproof dApps
-                in Web 3.0, but also includes built-in authentication:
+                Sol Cerberus includes the following built-in authentication
+                methods:
               </p>
               <ul className="sqList">
                 <li>
-                  <strong>Wallet:</strong> Grant access to specific Wallet.
+                  <strong>Wallet:</strong> Grant access to specific Wallets.
                 </li>
                 <li>
                   <strong>NFT:</strong> Grant access to owners of specific NFTs.
