@@ -6,14 +6,14 @@ import "../styles/variables.scss";
 import "../styles/globals.scss";
 import "react-tooltip/dist/react-tooltip.css";
 
-function CubistGames({ Component, pageProps }: AppProps) {
+function SolCerberus({ Component, pageProps, router }: AppProps) {
   return (
     <ContextProvider>
       <Layout>
-        <Component {...pageProps} />
+        <Component {...pageProps} router={router} />
       </Layout>
     </ContextProvider>
   );
 }
 
-export default CubistGames;
+export default SolCerberus;

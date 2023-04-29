@@ -16,7 +16,7 @@ Before installing Sol Cerberus make sure you meet the following requirements:
 | Software       | Version |
 |:---------------|:--------|
 | [`Rust`] | `1.67.0` or later |
-| [`Anchor CLI`] | `0.26.0` or later |
+| [`Anchor CLI`] | `0.27.0` or later |
 | [`Solana CLI`] | `1.14.13` or later |
 
 ## Frontend

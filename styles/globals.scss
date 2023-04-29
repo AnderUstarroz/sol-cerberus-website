@@ -114,6 +114,11 @@ button:focus {
   outline: none;
 }
 
+.page {
+  max-width: 928px;
+  padding-top: 60px;
+  margin: 0 auto;
+}
 .wallet-adapter-dropdown-list-item,
 button {
   font-family: "Bowlby One SC", cursive;
@@ -363,6 +368,7 @@ ul {
 
 a {
   text-decoration: none;
+  color: white;
 }
 
 .link {

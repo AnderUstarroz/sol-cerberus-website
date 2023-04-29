@@ -77,7 +77,7 @@ import * as anchor from "@project-serum/anchor";
       222, 53, 138, 189, 224, 216, 117, 173, 10, 149, 53, 45, 73, 251, 237, 246,
       15, 185, 186, 82, 177, 240, 148, 69, 241, 227, 167, 80, 141, 89, 240, 121,
       121, 35, 172, 247, 68, 251, 226, 218, 48, 63, 176, 109, 168, 89, 238, 135,
-    ])
+    ]) // NOTE: This is just a sample wallet, you must replace this Keypair by your own wallet private key
   ); 
 
   const provider = new anchor.AnchorProvider(

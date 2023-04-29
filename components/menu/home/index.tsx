@@ -7,6 +7,7 @@ import Link from "next/link";
 const SiteLinks = dynamic(() => import("../menu_item/site_links"));
 const Button = dynamic(() => import("../../button"));
 const MenuItem = dynamic(() => import("../menu_item"));
+const Icon = dynamic(() => import("../../icon"));
 
 export default function HomeMenu({ toggle }: HomeMenuType) {
   // const ScrollSection = (section: string) => {
@@ -33,19 +34,25 @@ export default function HomeMenu({ toggle }: HomeMenuType) {
         </div>
       </MenuItem>
 
+      <MenuItem whileTap={{}} whileHover={{}}>
+        <Button cType="transparent">
+          <Link
+            title="Sol Cerberus in Twitter"
+            href={"https://twitter.com/SolCerberus"}
+            target="_blank"
+            onClick={toggle}
+          >
+            <Icon cType="twitter" />
+          </Link>
+        </Button>
+      </MenuItem>
+
       {/* <MenuItem whileTap={{}} whileHover={{}}>
-        <div className="vAligned gap5">
-          <Button cType="transparent" style={{ paddingBottom: 4 }}>
-            <Link
-              title="Visit Website"
-              href={"/"}
-              target="_blank"
-              onClick={toggle}
-            >
-              <Icon cType="web" height={size} width={size} />
-            </Link>
-          </Button>
-        </div>
+        <Button cType="transparent">
+          <Link href="/app" title="Documentation" onClick={toggle}>
+            APPs
+          </Link>
+        </Button>
       </MenuItem> */}
       <MenuItem whileTap={{}} whileHover={{}}>
         <Button cType="transparent">

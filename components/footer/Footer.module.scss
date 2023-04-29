@@ -1,0 +1,22 @@
+.footer {
+  margin-top: auto;
+  color: white;
+  background: #403b39 url(../../public/images/badlands/footer-bg.webp) repeat
+    top left;
+  font-size: 12px;
+  padding: 20px;
+  > div {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.icons {
+  display: flex;
+  gap: 5px;
+  > a {
+    display: flex;
+  }
+}

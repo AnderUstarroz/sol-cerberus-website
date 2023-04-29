@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 
 const MobileNav = dynamic(() => import("../mobile_nav"));
 const Nav = dynamic(() => import("../nav"));
+const Footer = dynamic(() => import("../footer"));
 
 export default function Layout({ children }: any) {
   return (
@@ -16,6 +17,7 @@ export default function Layout({ children }: any) {
         </motion.header>
       </Headroom>
       <main>{children}</main>
+      <Footer />
     </>
   );
 }

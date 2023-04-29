@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { DEFAULT_ANIMATION } from "../components/utils/animation";
 import { ReactNode, useState } from "react";
 import Link from "next/link";
+import { siteUrl } from "../components/utils/url";
 
 // https://www.shutterstock.com/video/clip-28255210-sun-surface-solar-flares
 // https://www.google.com/search?q=sun+burning+video&rlz=1C5CHFA_enES984ES984&oq=sun+burning+video&aqs=chrome..69i57j0i19i512l9.2381j0j7&sourceid=chrome&ie=UTF-8#fpstate=ive&vld=cid:e9eb4c89,vid:WBMl-JV0DoE
@@ -18,7 +19,7 @@ const ReactPlayer = dynamic(() => import("react-player/youtube"), {
   ssr: false,
 });
 
-export default function Home() {
+export default function Home({ router }) {
   const [modals, setModals] = useState({
     main: false,
     roles: false,
@@ -45,9 +46,9 @@ export default function Home() {
         />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:domain" content="http://localhost:3000" />
-        <meta property="og:url" content="https://solcerberus.com" />
-        <meta name="twitter:url" content="https://solcerberus.com" />
+        <meta name="twitter:domain" content={siteUrl("")} />
+        <meta property="og:url" content={siteUrl("")} />
+        <meta name="twitter:url" content={siteUrl("")} />
         <meta property="og:title" content="Sol Cerberus" />
         <meta name="twitter:title" content="Sol Cerberus" />
         <meta
@@ -68,12 +69,34 @@ export default function Home() {
         />
       </Head>
       <AnimatePresence>
-        <motion.div className={styles.container} {...DEFAULT_ANIMATION}>
+        <motion.div
+          className={`page ${styles.container}`}
+          {...DEFAULT_ANIMATION}
+        >
           <Logo />
           <h1>
             <span>Sol</span> Cerberus
           </h1>
           <p>The new authority</p>
+          <section>
+            <div className={styles.videoWrapper}>
+              <ReactPlayer
+                width="100%"
+                height="100%"
+                heigh="auto"
+                url="https://www.youtube.com/watch?v=ryE8Rhfc47I"
+                controls={true}
+              />
+            </div>
+            <h3 className="txtCenter mb-big">
+              Want to see Sol Cerberus in action?
+            </h3>
+            <div className="aligned centered">
+              <Link href="https://demo.solcerberus.com/">
+                <Button className="big">View Demo</Button>
+              </Link>
+            </div>
+          </section>
           <section>
             <div className={styles.shapeBox}>
               <div>
@@ -99,26 +122,6 @@ export default function Home() {
                   </Link>
                 </div>
               </div>
-            </div>
-          </section>
-          <section>
-            <h2>Presentation</h2>
-            <div className={styles.videoWrapper}>
-              <ReactPlayer
-                width="100%"
-                height="100%"
-                heigh="auto"
-                url="https://www.youtube.com/watch?v=ryE8Rhfc47I"
-                controls={true}
-              />
-            </div>
-            <h3 className="txtCenter mb-big">
-              Want to see Sol Cerberus in action?
-            </h3>
-            <div className="aligned centered">
-              <Link href="https://demo.solcerberus.com/">
-                <Button className="big">View Demo</Button>
-              </Link>
             </div>
           </section>
           <section>

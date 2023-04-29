@@ -12,6 +12,7 @@
   }
   button,
   a {
+    display: flex;
     font-family: "Bowlby One SC";
     text-transform: uppercase;
     font-size: var(--fontSizeBig);
