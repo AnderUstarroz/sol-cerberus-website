@@ -7,10 +7,10 @@ const Icon = dynamic(() => import("../icon"));
 const Button = dynamic(() => import("../button"));
 ReactModal.setAppElement("#__next");
 
-const Modal = (props: any) => {
+const Modal = ({ className, ...props }: any) => {
   return (
     <ReactModal
-      className={props.className ? props.className : styles.modal}
+      className={`${styles.modal}${className ? ` ${className}` : ""}`}
       isOpen={props.modals[props.modalId]}
       onAfterOpen={() => (document.body.style.overflow = "hidden")}
       onAfterClose={() => (document.body.style.overflow = "unset")}

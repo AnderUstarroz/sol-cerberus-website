@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { HomeMenuType } from "./types";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const SiteLinks = dynamic(() => import("../menu_item/site_links"));
 const Button = dynamic(() => import("../../button"));
@@ -10,6 +11,7 @@ const MenuItem = dynamic(() => import("../menu_item"));
 const Icon = dynamic(() => import("../../icon"));
 
 export default function HomeMenu({ toggle }: HomeMenuType) {
+  const router = useRouter();
   // const ScrollSection = (section: string) => {
   //   if (toggle) {
   //     toggle();
@@ -47,13 +49,13 @@ export default function HomeMenu({ toggle }: HomeMenuType) {
         </Button>
       </MenuItem>
 
-      {/* <MenuItem whileTap={{}} whileHover={{}}>
+      <MenuItem whileTap={{}} whileHover={{}}>
         <Button cType="transparent">
           <Link href="/app" title="Documentation" onClick={toggle}>
             APPs
           </Link>
         </Button>
-      </MenuItem> */}
+      </MenuItem>
       <MenuItem whileTap={{}} whileHover={{}}>
         <Button cType="transparent">
           <Link
@@ -76,9 +78,10 @@ export default function HomeMenu({ toggle }: HomeMenuType) {
           </Link>
         </Button>
       </MenuItem>
-      {/* <MenuItem whileTap={{}} whileHover={{}}>
+      {router.pathname.slice(0, 4) === "/app"}
+      <MenuItem whileTap={{}} whileHover={{}}>
         <Button cType="wallet" className="btnRadius2" />
-      </MenuItem> */}
+      </MenuItem>
     </motion.ul>
   );
 }

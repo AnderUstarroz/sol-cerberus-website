@@ -1,0 +1,66 @@
+.container {
+  & :global {
+    .newBtn {
+      display: flex;
+      justify-content: end;
+      margin: 25px 0 0 0;
+    }
+  }
+}
+
+.loading {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.wideModal {
+  width: 650px !important;
+  & :global {
+    .inputs {
+      padding: 25px 0 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      > svg {
+        width: 25px;
+        height: 25px;
+      }
+    }
+    .checkbox {
+      cursor: pointer;
+      color: #8c8494;
+      padding: 7px 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    & :global {
+      .newBtn {
+        margin: 25px 10px 0;
+      }
+    }
+  }
+  .wideModal {
+    & :global {
+      .inputs {
+        flex-direction: column;
+        > svg {
+          width: 20px;
+          height: 20px;
+          transform: rotate(270deg) !important;
+        }
+      }
+      .checkbox {
+        padding: 0;
+        flex-direction: column-reverse;
+      }
+    }
+  }
+}

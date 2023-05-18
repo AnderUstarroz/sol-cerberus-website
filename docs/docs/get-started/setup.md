@@ -95,6 +95,7 @@ import * as anchor from "@project-serum/anchor";
           id: scAppId,
           name: "My auth app",  // up to 16 characters
           recovery: null,       // Recovery wallet (backup)
+          cached: false,        // Permissions cached on frontend
         })
         .accounts({
           app: await solCerberus.getAppPda(),

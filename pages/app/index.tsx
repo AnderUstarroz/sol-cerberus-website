@@ -1,145 +1,295 @@
-// import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-// import Head from "next/head";
-// import { ReactNode, useEffect, useState } from "react";
-// import { siteUrl } from "../../components/utils/url";
-// import styles from "../../styles/Apps.module.scss";
-// import dynamic from "next/dynamic";
-// import { SolCerberus } from "sol-cerberus-js";
-// import { motion, AnimatePresence } from "framer-motion";
-// import { DEFAULT_ANIMATION } from "../../components/utils/animation";
-// import { PublicKey } from "@solana/web3.js";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import Head from "next/head";
+import { ReactNode, startTransition, useEffect, useState } from "react";
+import styles from "../../styles/Apps.module.scss";
+import dynamic from "next/dynamic";
+import { motion, AnimatePresence } from "framer-motion";
+import { DEFAULT_ANIMATION } from "../../components/utils/animation";
+import {
+  SolCerberus,
+  SolCerberusTypes,
+  sc_app_pda,
+  short_key,
+} from "sol-cerberus-js";
+import * as anchor from "@project-serum/anchor";
+import { get_provider } from "../../components/utils/sol-cerberus-app";
+import { Keypair, PublicKey } from "@solana/web3.js";
+import { Tooltip } from "react-tooltip";
+import { AppError, validateInput } from "../../components/validation/app";
+import { flashMsg } from "../../components/utils/helpers";
+import { NewAPPType, NewAPPErrorType } from "../../types/app";
+import Link from "next/link";
 
-// const ConnectWallet = dynamic(() => import("../../components/connect-wallet"));
-// const Spinner = dynamic(() => import("../../components/spinner"));
+const ConnectWallet = dynamic(() => import("../../components/connect-wallet"));
+const Spinner = dynamic(() => import("../../components/spinner"));
+const Button = dynamic(() => import("../../components/button"));
+const Modal = dynamic(() => import("../../components/modal"));
+const Icon = dynamic(() => import("../../components/icon"));
+const Input = dynamic(() => import("../../components/input"));
 
 export default function Apps({ router }) {
-  // const { publicKey, wallet, sendTransaction } = useWallet();
-  // const { connection } = useConnection();
-  // const [loading, setLoading] = useState<boolean>(false);
-  // const [modals, setModals] = useState({
-  //   main: false,
-  // });
+  const { publicKey, wallet } = useWallet();
+  const { connection } = useConnection();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [apps, setApps] = useState<
+    anchor.IdlAccounts<SolCerberusTypes>["app"][]
+  >([]);
+  const [newApp, setNewApp] = useState<NewAPPType>({
+    name: "",
+    recovery: null,
+    cached: true,
+  });
+  const [newAppErrors, setNewAppErrors] = useState<NewAPPErrorType>({});
+  const [solCerberus, setSolCerberus] = useState<SolCerberus | null>(null);
+  const [modals, setModals] = useState({
+    new_app: false,
+  });
 
-  // const [mainModal, setMainModal] = useState<ReactNode>(null);
+  const clearStates = () => {
+    startTransition(() => {
+      setSolCerberus(null);
+      setApps([]);
+    });
+  };
 
-  // const setMainModalContent = (content: any, show = true) => {
-  //   if (show) {
-  //     setMainModal(content);
-  //   }
-  //   setModals({ ...modals, main: show });
-  // };
+  const validateField = (key: string, value: any): boolean => {
+    try {
+      validateInput(key, value);
+      return true;
+    } catch (error) {
+      if (error instanceof AppError) {
+        setNewAppErrors({ ...newAppErrors, [error.code]: error.message });
+        flashMsg(error.message, "error", 3500);
+      }
+    }
+    return false;
+  };
+  const handleUpdateNewApp = (key: string, value: any) => {
+    delete newAppErrors[key];
+    setNewAppErrors(newAppErrors);
+    setNewApp({ ...newApp, [key]: value });
+  };
 
-  // const initAccounts = async (walletPublicKey: PublicKey) => {
-  //   setLoading(true);
+  const loadApps = async (pubkey: PublicKey) =>
+    (
+      await solCerberus.program.account.app.all([
+        {
+          memcmp: {
+            offset: 40, // Authority Starting byte (First bytes 0-7: account discriminator, bytes 8-39 = APP ID)
+            bytes: pubkey.toBase58(), // base58 encoded string
+          },
+        },
+      ])
+    ).map((row) => row.account);
 
-  //   let sc: SolCerberus;
-  //   // const provider: anchor.Provider = get_provider(connection, wallet);
-  //   // let scAppId: PublicKey;
-  //   // let sc: SolCerberus;
-  //   // let scAppPda: PublicKey;
-  //   // let demoPda: PublicKey;
-  //   // try {
-  //   //   scAppId = new PublicKey(appIdStr);
-  //   //   sc = new SolCerberus(scAppId, provider, {
-  //   //     rulesChangedCallback: handleUpdatedRules,
-  //   //     rolesChangedCallback: handleUpdatedRoles,
-  //   //   });
-  //   //   setSolCerberus(sc);
-  //   //   [scAppPda, demoPda] = (
-  //   //     await Promise.allSettled([sc_app_pda(scAppId), demo_pda(scAppId)])
-  //   //   )
-  //   //     .filter((r: any) => r.status === "fulfilled")
-  //   //     .map((r: any) => r.value);
-  //   // } catch (e) {
-  //   //   flashMsg(`Invalid APP ID ${appIdStr}`);
-  //   //   console.error(`Invalid APP ID ${appIdStr}`);
-  //   //   return (window.location.href = "/");
-  //   // }
-  //   // const demoProg = get_demo_program(provider);
-  //   // setPdas({ scAppPda: scAppPda, demoPda: demoPda });
-  //   // setDemoProgram(demoProg);
-  //   // setPermissions(await sc.fetchPerms());
-  //   // setAllAssignedRoles(await sc.fetchAssignedRoles());
-  //   // setMetaplex(new Metaplex(connection));
-  //   // try {
-  //   //   await refreshDemo(demoProg, demoPda);
-  //   // } catch (e) {
-  //   //   if (appIdStr !== myAppId(publicKey)) {
-  //   //     console.error(`Invalid APP ID ${appIdStr}`);
-  //   //     return (window.location.href = "/");
-  //   //   }
-  //   // }
+  const handleSave = async () => {
+    // Exit if there are existing errors:
+    if (!!Object.keys(newAppErrors).length) return;
+    // Validate fields:
+    for (const [key, value] of Object.entries(newApp)) {
+      if (!validateField(key, value)) return;
+    }
+    setLoading(true);
+    try {
+      const newAppId = Keypair.generate().publicKey;
+      await solCerberus.program.methods
+        .initializeApp({
+          id: newAppId,
+          recovery: newApp.recovery ? newApp.recovery : null,
+          name: newApp.name,
+          cached: newApp.cached,
+        })
+        .accounts({
+          app: await sc_app_pda(newAppId),
+        })
+        .rpc();
+    } catch (e) {
+      console.error(e);
+    }
+    startTransition(() => {
+      setModals({ ...modals, new_app: false });
+      setLoading(false);
+    });
+  };
+  // STEP 1: Init
+  useEffect(() => {
+    if (!publicKey) {
+      // Clear all data when user's wallet has been disconnected
+      if (solCerberus) {
+        clearStates();
+      }
+      return;
+    }
+    if (solCerberus) return;
+    setSolCerberus(
+      new SolCerberus(publicKey, get_provider(connection, wallet))
+    );
+  }, [publicKey]);
 
-  //   setLoading(false);
-  // };
+  // STEP 2: load APPs
+  useEffect(() => {
+    if (!solCerberus) {
+      return;
+    }
+    (async () => {
+      const myApps = await loadApps(publicKey);
+      startTransition(() => {
+        setApps(myApps);
+        setLoading(false);
+      });
+    })();
+  }, [solCerberus]);
 
-  // useEffect(() => {
-  //   if (!publicKey) {
-  //     // Clear all data when user's wallet has been disconnected
-  //     return;
-  //   }
-  //   initAccounts(publicKey);
-  // }, [publicKey]);
-  // return (
-  //   <>
-  //     <Head>
-  //       <title>Sol Cerberus APPs</title>
-  //       <link rel="icon" href="/favicon.ico" />
-  //       <meta
-  //         name="description"
-  //         content="Create your own role base access control for Solana"
-  //       />
-  //       <meta property="og:type" content="website" />
-  //       <meta name="twitter:card" content="summary_large_image" />
-  //       <meta name="twitter:domain" content={siteUrl("/app")} />
-  //       <meta property="og:url" content={siteUrl("/app")} />
-  //       <meta name="twitter:url" content={siteUrl("/app")} />
-  //       <meta property="og:title" content="Sol Cerberus APPs" />
-  //       <meta name="twitter:title" content="Sol Cerberus APPs" />
-  //       <meta
-  //         property="og:image"
-  //         content="https://raw.githubusercontent.com/AnderUstarroz/sol-cerberus-website/main/public/images/logo.webp"
-  //       />
-  //       <meta
-  //         name="twitter:image"
-  //         content="https://raw.githubusercontent.com/AnderUstarroz/sol-cerberus-website/main/public/images/logo.webp"
-  //       />
-  //       <meta
-  //         name="twitter:description"
-  //         content="Create your own role base access control for Solana"
-  //       />
-  //       <meta
-  //         property="og:description"
-  //         content="Create your own role base access control for Solana"
-  //       />
-  //     </Head>
-  //     {!publicKey ? (
-  //       <ConnectWallet />
-  //     ) : (
-  //       <AnimatePresence>
-  //         {loading ? (
-  //           <motion.div
-  //             key={"spinner"}
-  //             className={styles.loading}
-  //             {...DEFAULT_ANIMATION}
-  //           >
-  //             <Spinner />
-  //           </motion.div>
-  //         ) : (
-  //           <motion.div
-  //             key={"content"}
-  //             className={`page ${styles.container}`}
-  //             {...DEFAULT_ANIMATION}
-  //           >
-  //             <h1>My APPs</h1>
-  //             <div>mickey mouse</div>
-  //             <div>mickey mouse</div>
-  //           </motion.div>
-  //         )}
-  //       </AnimatePresence>
-  //     )}
-  //   </>
-  // );
-
-  return <></>;
+  return (
+    <>
+      <Head>
+        <title>Sol Cerberus Dashboard</title>
+        <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content="Sol Cerberus dashboard for managing the permissions of your Solana DAPPs"
+        />
+      </Head>
+      {!publicKey ? (
+        <ConnectWallet />
+      ) : (
+        <AnimatePresence>
+          {loading ? (
+            <motion.div
+              key={"spinner"}
+              className={styles.loading}
+              {...DEFAULT_ANIMATION}
+            >
+              <Spinner />
+            </motion.div>
+          ) : (
+            <motion.div
+              key={"content"}
+              className={`page ${styles.container}`}
+              {...DEFAULT_ANIMATION}
+            >
+              <h1>Sol Cerberus APPs</h1>
+              <p className="txtCenter">
+                The APPs contain the permissions and roles associated to your
+                Solana programs.
+              </p>
+              <section className="apps">
+                {!!apps.length && (
+                  <ul className={`${apps.length === 1 ? "centered" : ""}`}>
+                    {apps.map((app, k: number) => (
+                      <li key={`app${k}`}>
+                        <h3>{app.name}</h3>
+                        <div className="desc">
+                          <div>
+                            <div>APP ID:</div>
+                            <div>Cached:</div>
+                            <div>Recovery wallet:</div>
+                          </div>
+                          <div>
+                            <div>{short_key(app.id.toBase58())}</div>
+                            <div>{app.cached ? "Yes" : "No"}</div>
+                            <div>
+                              {app.recovery
+                                ? short_key(app.recovery)
+                                : "Not defined"}
+                            </div>
+                          </div>
+                        </div>
+                        <Button className="button1">
+                          <Link href={`/app/${app.id.toBase58()}/roles`}>
+                            Manage
+                          </Link>
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+              <Button
+                className="button1 new-app"
+                onClick={() => setModals({ ...modals, new_app: true })}
+              >
+                CREATE NEW APP
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
+      <Modal modalId={"new_app"} modals={modals} setIsOpen={setModals}>
+        <div className={styles.modal}>
+          <h3>Create New APP</h3>
+          {loading ? (
+            <motion.div
+              key={"spinner"}
+              className={styles.loading}
+              {...DEFAULT_ANIMATION}
+            >
+              <Spinner />
+            </motion.div>
+          ) : (
+            <fieldset>
+              <div className="mb-med">
+                <label className="overlap fullWidth">
+                  <Input
+                    className={`fullWidth${
+                      newAppErrors.hasOwnProperty("name") ? " error" : ""
+                    }`}
+                    value={newApp.name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleUpdateNewApp("name", e.target.value)
+                    }
+                    onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
+                      validateField("name", e.target.value)
+                    }
+                    maxLength={16}
+                  />
+                  <span>Name</span>
+                  <em
+                    data-tooltip-id="modal-tooltip"
+                    data-tooltip-content="Enter a name to identify your project, e.g. myproject.com"
+                  >
+                    <Icon cType="info" className="icon1" />
+                  </em>
+                </label>
+              </div>
+              <div className="mb-med">
+                <label className="overlap fullWidth">
+                  <Input
+                    className={`fullWidth${
+                      newAppErrors.hasOwnProperty("recovery") ? " error" : ""
+                    }`}
+                    value={newApp.recovery ? newApp.recovery : ""}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleUpdateNewApp("recovery", e.target.value)
+                    }
+                    onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
+                      validateField("recovery", e.target.value)
+                    }
+                    maxLength={44}
+                  />
+                  <span>Recovery wallet</span>
+                  <em
+                    data-tooltip-id="modal-tooltip"
+                    data-tooltip-content="Recovery Wallet enables the Authority to be changed in the event of a loss"
+                  >
+                    <Icon cType="info" className="icon1" />
+                  </em>
+                </label>
+              </div>
+              <div className="aligned centered">
+                <Button
+                  className="button2"
+                  onClick={() => setModals({ ...modals, new_app: false })}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={() => handleSave()}>Accept</Button>
+              </div>
+            </fieldset>
+          )}
+          <Tooltip id="modal-tooltip" />
+        </div>
+      </Modal>
+    </>
+  );
 }

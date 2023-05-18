@@ -1,0 +1,17 @@
+.cta {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  color: white;
+  background: #403b39 url(../../public/images/badlands/footer-bg.webp) repeat
+    top left;
+  font-size: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  & :global {
+    .save {
+    }
+  }
+}

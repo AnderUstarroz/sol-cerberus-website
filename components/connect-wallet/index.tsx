@@ -14,7 +14,7 @@ export default function ConnectWallet() {
       >
         <div>
           <h1>Welcome</h1>
-          <p>Connect your wallet to access your APPs</p>
+          <p>Connect your wallet to access dashboard</p>
           <Button cType="wallet" />
         </div>
       </motion.div>

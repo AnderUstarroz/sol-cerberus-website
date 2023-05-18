@@ -1,6 +1,55 @@
 .container {
+  & :global {
+    .apps {
+      margin: 25px 0 0 0;
+      > ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        li {
+          padding: 25px;
+          flex-basis: calc(
+            33.33% - 40px
+          ); /* Set the flex basis to 33.33% (3 columns) */
+          background-color: rgba(40, 37, 36, 0.8);
+          h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            text-align: center;
+          }
+          .desc {
+            display: flex;
+            gap: 7px;
+            > div {
+              display: flex;
+              align-items: flex-end;
+              flex-direction: column;
+              color: #e9d8c1;
+              &:last-of-type {
+                color: #8c8494;
+                align-items: flex-start;
+              }
+            }
+          }
+          button {
+            display: block;
+            margin: 15px auto 0;
+          }
+        }
+      }
+    }
+    .new-app {
+      display: block;
+      margin: 50px auto;
+    }
+  }
 }
 
+.modal {
+  h3 {
+    padding-bottom: 25px;
+  }
+}
 .loading {
   height: 100%;
   display: flex;

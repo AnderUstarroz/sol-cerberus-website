@@ -19,7 +19,6 @@ const Icons: IconTypes = {
   coins: dynamic(() => import("./coins")),
   game: dynamic(() => import("./game")),
   award: dynamic(() => import("./award")),
-  crystalBall: dynamic(() => import("./crystal_ball")),
   treasure: dynamic(() => import("./treasure")),
   share: dynamic(() => import("./share")),
   vs: dynamic(() => import("./vs")),
@@ -30,6 +29,8 @@ const Icons: IconTypes = {
   forbidden: dynamic(() => import("./forbidden")),
   shield: dynamic(() => import("./shield")),
   twitter: dynamic(() => import("./twitter")),
+  permissions: dynamic(() => import("./permissions")),
+  roles: dynamic(() => import("./roles")),
 };
 
 function Icon({ cType, ...props }: IconType) {
