@@ -1,9 +1,121 @@
 .container {
+  section {
+    width: 100%;
+  }
+  ul {
+    li {
+      &:not(&:last-child) {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+    }
+  }
   & :global {
     .newBtn {
       display: flex;
-      justify-content: end;
+      justify-content: flex-end;
       margin: 25px 0 0 0;
+    }
+
+    .role {
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background-color: rgba(27, 25, 24, 0.8);
+      border-radius: 4px;
+      margin: 15px 0 80px;
+      h3 {
+        font-size: 18px;
+        padding: 12px 11px 12px 16px;
+        text-shadow: 0px 2px 0px #000000;
+      }
+      h3,
+      h4,
+      h5 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 7px;
+        color: #ffffff;
+        svg {
+          width: 25px;
+          height: 25px;
+        }
+        > span {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 7px;
+          > em {
+            padding: 0px 4px;
+            position: absolute;
+            top: 0;
+            left: 27px;
+            font-size: 8px;
+            color: var(--textColor2);
+            // background: rgba(64, 59, 57, 0.2);
+            // border: 1px solid rgba(255, 255, 255, 0.06);
+          }
+          > span {
+            padding-top: 7px;
+          }
+        }
+        .expand {
+          font-size: 25px;
+          padding: 0 5px;
+          color: var(--textColor2);
+          &:hover {
+            color: white;
+          }
+        }
+      }
+      ul {
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.3s ease;
+        &.expanded {
+          max-height: fit-content;
+        }
+      }
+    }
+    .resource {
+      background-color: rgb(144, 135, 135, 0.2);
+      h4 {
+        font-size: 16px;
+        padding: 12px 11px 16px 100px;
+      }
+    }
+    .permission {
+      background-color: rgb(144, 135, 135, 0.2);
+      h5 {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        padding: 12px 16px 16px 200px;
+        .expires {
+          padding-left: 5px;
+          color: var(--textColor2);
+          gap: 3px;
+          font-size: 10px;
+          &.error {
+            color: var(--errorBg);
+          }
+        }
+      }
+      li {
+        display: flex;
+        align-items: center;
+        > div {
+          padding-right: 11px;
+          flex: 1;
+          display: flex;
+          justify-content: flex-end;
+          button {
+            padding: 0 5px;
+          }
+        }
+        &:nth-of-type(even) {
+          background-color: rgb(144, 135, 135, 0.2);
+        }
+      }
     }
   }
 }
@@ -29,7 +141,7 @@
     }
     .checkbox {
       cursor: pointer;
-      color: #8c8494;
+      color: var(--textColor2);
       padding: 7px 0;
       display: flex;
       align-items: center;
@@ -39,7 +151,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   .container {
     & :global {
       .newBtn {

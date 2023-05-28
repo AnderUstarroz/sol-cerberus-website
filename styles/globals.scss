@@ -24,7 +24,7 @@ body {
   background-repeat: no-repeat;
   background-color: #4a4241;
   color: white;
-  caret-color: #8c8494;
+  caret-color: var(--textColor2);
 }
 #__next {
   min-height: 100%;
@@ -90,12 +90,15 @@ input,
 textarea {
   padding: 12px 40px 12px 16px;
   background-color: #0e0d0c;
-  color: #8c8494;
+  color: var(--textColor2);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 2px;
   &::-webkit-calendar-picker-indicator {
     filter: invert(100%);
     cursor: pointer;
+  }
+  &:read-only {
+    background: rgba(0, 0, 0, 0);
   }
 }
 /* Hide arrow number: Chrome, Safari, Edge, Opera */
@@ -137,7 +140,7 @@ button {
   -webkit-transition: background-color 1s ease-out;
   -moz-transition: background-color 1s ease-out;
   -o-transition: background-color 1s ease-out;
-  transition: background-color 1s ease-out;
+  transition: all 1s ease-out;
   color: white;
   background-color: #e3be59;
   &:hover {
@@ -186,6 +189,12 @@ button.pulsar0 {
   background-color: #7c7370;
   &:hover {
     background-color: #5e5755;
+  }
+}
+.button4 {
+  background-color: #5e5755;
+  &:hover {
+    background-color: #7c7370;
   }
 }
 button.btnRadius2 {
@@ -254,9 +263,9 @@ button.btnRadius2 {
   }
 }
 .icon3 {
-  color: #8c8494;
+  color: var(--textColor2);
   path {
-    fill: #8c8494;
+    fill: var(--textColor2);
   }
   &:hover {
     color: white;
@@ -273,7 +282,7 @@ table {
   font-size: var(--fontSizeXS);
 
   th {
-    color: #8c8494;
+    color: var(--textColor2);
   }
   tr {
     -webkit-transition: background-color 1s ease-out;
@@ -300,7 +309,7 @@ table {
       }
       p {
         margin: 0;
-        color: #8c8494;
+        color: var(--textColor2);
       }
     }
   }
@@ -332,6 +341,9 @@ table {
 
 .gap5 {
   gap: 5px;
+}
+.gap7 {
+  gap: 7px;
 }
 .capitalize {
   text-transform: capitalize;
@@ -393,11 +405,10 @@ a {
 }
 
 .react-tooltip {
-  background-color: #e3be59 !important;
-  text-shadow: 1px 1px 0px #4c4b4b;
+  text-shadow: 1px 1px 3px black;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   .mobileCols {
     align-items: baseline;
     flex-direction: column;

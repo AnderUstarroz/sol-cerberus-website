@@ -23,4 +23,16 @@ html {
   --fire: #ffff05;
   --iconFill0: white;
   --iconFill1: #e3be59;
+
+  --textColor2: #8c8494;
+  --mainColor: #e3be59;
+  --errorBg: #bd2742;
+
+  //Tooltip
+  --rt-color-success: green !important;
+  --rt-color-warning: green !important;
+  --rt-color-info: green !important;
+  --rt-color-error: var(--errorBg) !important;
+  --rt-color-dark: var(--mainColor) !important;
+  --rt-opacity: 1 !important;
 }

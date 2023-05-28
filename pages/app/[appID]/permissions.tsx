@@ -13,7 +13,7 @@ import {
 import * as anchor from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { get_provider } from "../../../components/utils/sol-cerberus-app";
-import { format, addMinutes, addHours } from "date-fns";
+import { format, addHours } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import { DEFAULT_ANIMATION } from "../../../components/utils/animation";
 import { flashMsg } from "../../../components/utils/helpers";
@@ -26,6 +26,7 @@ import {
   RuleError,
   TXStackType,
 } from "../../../types/permissions";
+import { format_time } from "../../../components/utils/dates";
 
 const Menu = dynamic(() => import("../../../components/app/menu"));
 const Modal = dynamic(() => import("../../../components/modal"));
@@ -38,26 +39,32 @@ const Breadcrumbs = dynamic(
   () => import("../../../components/app/breadcrumbs")
 );
 
+const empty_rule = (): ManageRuleType => ({
+  action: Actions.Create,
+  namespace: namespaces.Rule,
+  role: "",
+  resource: "",
+  permission: "",
+  expiresAt: null,
+  readOnlyRole: false,
+  readOnlyResource: false,
+  readOnlyPermission: false,
+});
+
 export default function Permissions({ router }) {
   const { publicKey, wallet } = useWallet();
   const { connection } = useConnection();
-  const [modals, setModals] = useState({
-    main: false,
-    rule: false,
-  });
+  const [expanded, setExpanded] = useState<{ [k: string]: boolean }>({});
   const [mainModal, setMainModal] = useState<ReactNode>(null);
   const [txStack, setTxStack] = useState<TXStackType>({});
   const [solCerberus, setSolCerberus] = useState<SolCerberus | null>(null);
   const [rules, setRules] = useState<CachedPermsType>({});
-  const [rule, setRule] = useState<ManageRuleType>({
-    action: Actions.Create,
-    namespace: namespaces.Rule,
-    role: "",
-    resource: "",
-    permission: "",
-    expiresAt: null,
-  });
+  const [rule, setRule] = useState<ManageRuleType>(empty_rule());
   const [ruleErrors, setRuleErrors] = useState<ManageRuleErrorsType>({});
+  const [modals, setModals] = useState({
+    main: false,
+    rule: false,
+  });
 
   const [_, __, appId, section] = router.asPath.split("/");
 
@@ -81,56 +88,84 @@ export default function Permissions({ router }) {
 
   const handleSave = () => {};
 
+  const showRuleModal = (defaultRule: ManageRuleType) => {
+    startTransition(() => {
+      setRuleErrors({});
+      setRule(defaultRule);
+      setModals({ ...modals, rule: true });
+    });
+  };
+
   const addToStack = () => {
+    if (!solCerberus) return;
     for (const field of ["role", "resource", "permission", "expiresAt"]) {
       if (!validateField(field, rule[field])) {
         break;
       }
     }
     if (Object.keys(txStack).length >= 10) {
-      flashMsg("Transaction stack is full", "error", 3500);
+      flashMsg(
+        "Maximum transaction stack reached! You need to save your changes in order to be able to apply more changes.",
+        "error",
+        10000
+      );
       return;
     }
 
     // Avoid duplicated permissions
-    if (rule.action === Actions.Create && rule.hasOwnProperty(rule.namespace)) {
-      for (const [role, resources] of Object.entries(rules[rule.namespace])) {
-        for (const [resource, permissions] of Object.entries(resources)) {
-          for (const permission of Object.keys(permissions)) {
-            if (
-              role === rule.role &&
-              resource === rule.resource &&
-              permission === rule.permission
-            ) {
-              flashMsg(
-                "Permission already exists! Cannot create duplicated permissions",
-                "error",
-                3500
-              );
-              return;
-            }
-          }
-        }
-      }
+    if (
+      rule.action === Actions.Create &&
+      rules.hasOwnProperty(rule.namespace) &&
+      rules[rule.namespace].hasOwnProperty(rule.role) &&
+      rules[rule.namespace][rule.role].hasOwnProperty(rule.resource) &&
+      rules[rule.namespace][rule.role][rule.resource].hasOwnProperty(
+        rule.permission
+      )
+    ) {
+      flashMsg(
+        "Permission already exists, cannot create duplicated permissions"
+      );
+      return;
     }
 
     const ruleKey = `${rule.namespace}-${rule.role}-${rule.resource}-${rule.permission}`;
-
+    // Remove instruction if key already exists (means that a rule has been deleted and then recreated or the other way around)
     if (txStack.hasOwnProperty(ruleKey)) {
-      if (
-        (rule.action === Actions.Create &&
-          txStack[ruleKey].type == Actions.Delete) ||
-        (rule.action === Actions.Delete &&
-          txStack[ruleKey].type == Actions.Create)
-      ) {
-        delete txStack[ruleKey];
-      }
+      delete txStack[ruleKey];
+      // Add Instruction otherwise
     } else {
       txStack[ruleKey] = {
         type: rule.action,
         ix: "TODOOOO",
       };
     }
+    let newRules = { ...rules };
+    // Update Rules to reflect the change:
+    if (rule.action === Actions.Create) {
+      // Add Rule
+      newRules = solCerberus.addPerm(
+        rules,
+        rule.namespace,
+        rule.role,
+        rule.resource,
+        rule.permission,
+        0,
+        rule.expiresAt
+      );
+    } else {
+      // Delete Rule
+      delete newRules[rule.namespace][rule.role][rule.resource][
+        rule.permission
+      ];
+    }
+    console.log(newRules);
+    // Reflect change on rules
+    startTransition(() => {
+      setRule(empty_rule());
+      setRules(newRules);
+      setTxStack(txStack);
+      setModals({ ...modals, rule: false });
+    });
   };
 
   const setMainModalContent = (content: any, show = true) => {
@@ -188,33 +223,188 @@ export default function Permissions({ router }) {
         <Menu appId={appId} active={section} />
         <div className="newBtn">
           <Button
-            className="button3"
-            onClick={() =>
-              startTransition(() => setModals({ ...modals, rule: true }))
-            }
+            className="button4"
+            onClick={() => showRuleModal(empty_rule())}
           >
-            Create new permission
+            New permission
           </Button>
         </div>
-        {!!Object.keys(rules).length && (
-          <ul>
-            <AnimatePresence>
-              {Object.entries(rules[namespaces.Rule]).map(([role, resources]) =>
-                Object.entries(resources).map(([resource, permissions]) =>
-                  Object.entries(permissions).map(([permission, data]) => (
-                    <motion.li
-                      key={`${role}-${resource}-${permission}`}
-                      {...DEFAULT_ANIMATION}
-                    >
-                      {`${role}-${resource}-${permission}`}{" "}
-                      {JSON.stringify(data)}
+        <section>
+          {!!Object.keys(rules).length && (
+            <ul className="role">
+              <AnimatePresence>
+                {Object.entries(rules[namespaces.Rule]).map(
+                  ([role, resources]) => (
+                    <motion.li key={`role-${role}`} {...DEFAULT_ANIMATION}>
+                      <h3>
+                        <span>
+                          <em>Role</em>
+                          <Icon cType="roles" />
+                          <span>{role}</span>
+                        </span>
+                        <div className="aligned">
+                          <Button
+                            className="button1 sm"
+                            onClick={() =>
+                              showRuleModal({
+                                ...empty_rule(),
+                                role: role,
+                                readOnlyRole: true,
+                                readOnlyResource: false,
+                              })
+                            }
+                          >
+                            Add
+                          </Button>
+                          <Button
+                            className="expand"
+                            cType="transparent"
+                            onClick={() =>
+                              startTransition(() =>
+                                setExpanded({
+                                  ...expanded,
+                                  [role]: !expanded[role],
+                                })
+                              )
+                            }
+                          >
+                            {expanded[role] ? "-" : "+"}
+                          </Button>
+                        </div>
+                      </h3>
+                      <ul
+                        className={`resource${
+                          expanded[role] ? " expanded" : ""
+                        }`}
+                      >
+                        {Object.entries(resources).map(
+                          ([resource, permissions]) => (
+                            <li key={`resource-${resource}`}>
+                              <h4>
+                                <span>
+                                  <em>Resource</em>
+                                  <Icon cType="resources" />{" "}
+                                  <span>{resource}</span>
+                                </span>
+                                <div className="aligned">
+                                  <Button
+                                    className="button1 sm"
+                                    onClick={() =>
+                                      showRuleModal({
+                                        ...empty_rule(),
+                                        role: role,
+                                        resource: resource,
+                                        readOnlyRole: true,
+                                        readOnlyResource: true,
+                                      })
+                                    }
+                                  >
+                                    Add
+                                  </Button>
+                                  <Button
+                                    className="expand"
+                                    cType="transparent"
+                                    onClick={() =>
+                                      startTransition(() =>
+                                        setExpanded({
+                                          ...expanded,
+                                          [`${role}-${resource}`]:
+                                            !expanded[`${role}-${resource}`],
+                                        })
+                                      )
+                                    }
+                                  >
+                                    {expanded[`${role}-${resource}`]
+                                      ? "-"
+                                      : "+"}
+                                  </Button>
+                                </div>
+                              </h4>
+                              <ul
+                                className={`permission${
+                                  expanded[`${role}-${resource}`]
+                                    ? " expanded"
+                                    : ""
+                                }`}
+                              >
+                                {Object.entries(permissions).map(
+                                  ([permission, data]) => (
+                                    <li key={`permission-${permission}`}>
+                                      <h5>
+                                        <span>
+                                          <Icon cType="permissions" />{" "}
+                                          <span>{permission}</span>
+                                          <em>Permission</em>
+                                        </span>
+                                        {!!data.expiresAt &&
+                                          (data.expiresAt <
+                                          new Date().getTime() ? (
+                                            <div
+                                              className="expires aligned error"
+                                              data-tooltip-id="main-tooltip"
+                                              data-tooltip-content={`Expired: ${format_time(
+                                                new Date(data.expiresAt)
+                                              )}`}
+                                              data-tooltip-variant="error"
+                                            >
+                                              <Icon
+                                                cType="exclamation"
+                                                className="icon1"
+                                                width={17}
+                                                height={17}
+                                              />{" "}
+                                              Expired{" "}
+                                            </div>
+                                          ) : (
+                                            <div className="expires">
+                                              Expires:{" "}
+                                              {format_time(
+                                                new Date(data.expiresAt)
+                                              )}
+                                            </div>
+                                          ))}
+                                      </h5>
+                                      <div>
+                                        <Button
+                                          data-tooltip-id="main-tooltip"
+                                          data-tooltip-content="Delete permission"
+                                          data-tooltip-variant="error"
+                                          cType="transparent"
+                                          onClick={() =>
+                                            showRuleModal({
+                                              namespace: namespaces.Rule,
+                                              role: role,
+                                              resource: resource,
+                                              permission: permission,
+                                              action: Actions.Delete,
+                                              expiresAt: null,
+                                              readOnlyRole: true,
+                                              readOnlyResource: true,
+                                              readOnlyPermission: true,
+                                            })
+                                          }
+                                        >
+                                          <Icon
+                                            cType="delete"
+                                            className="icon2"
+                                          />
+                                        </Button>
+                                      </div>
+                                    </li>
+                                  )
+                                )}
+                              </ul>
+                            </li>
+                          )
+                        )}
+                      </ul>
                     </motion.li>
-                  ))
-                )
-              )}
-            </AnimatePresence>
-          </ul>
-        )}
+                  )
+                )}
+              </AnimatePresence>
+            </ul>
+          )}
+        </section>
       </div>
       <Modal
         className={styles.wideModal}
@@ -223,111 +413,94 @@ export default function Permissions({ router }) {
         setIsOpen={setModals}
       >
         <>
-          {/* DELETE RULE */}
-          {rule.action === Actions.Delete ? (
-            <>
-              <h3>Delete permission</h3>
-              <p>Do you really want to delete the following permission?</p>
-              <div className="aligned end">
-                <Button
-                  className="button2"
-                  onClick={() => 1}
-                  disabled={!!Object.keys(ruleErrors).length}
-                >
-                  Delete
-                </Button>
-                <Button
-                  className="button1"
-                  onClick={() => setModals({ ...modals, rule: false })}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </>
-          ) : (
-            /** CREATE OR UPDATE RULE */
-            <>
-              <h3>
-                {rule.action === Actions.Create ? "Create new" : "Edit"}{" "}
-                permission
-              </h3>
+          {/* CREATE OR UPDATE RULE */}
+          <>
+            <h3>
+              {rule.action === Actions.Create ? "Add new" : "Delete"} permission
+            </h3>
+            {rule.action === Actions.Create ? (
               <p>
-                {rule.action === Actions.Create
-                  ? "Creates a new"
-                  : "Modifies an existing"}{" "}
-                permission for the corresponding <strong>Role</strong> and{" "}
-                <strong>Resource</strong>:
+                Creates a new permission within the respective{" "}
+                <strong>Role</strong> and <strong>Resource</strong>:
               </p>
-              <div className="inputs">
-                <label className="overlap fullWidth">
-                  <Input
-                    className={`fullWidth${
-                      ruleErrors.hasOwnProperty("role") ? " error" : ""
-                    }`}
-                    value={rule.role}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleUpdateRule("role", e.target.value)
-                    }
-                    onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
-                      validateField("role", e.target.value)
-                    }
-                    maxLength={16}
-                  />
-                  <span>Role</span>
-                  <em
-                    data-tooltip-id="modal-tooltip"
-                    data-tooltip-content="The Role getting the permission"
-                  >
-                    <Icon cType="info" className="icon3" />
-                  </em>
-                </label>
-                <Icon cType="chevron" direction="right" />
-                <label className="overlap fullWidth">
-                  <Input
-                    className={`fullWidth${
-                      ruleErrors.hasOwnProperty("resource") ? " error" : ""
-                    }`}
-                    value={rule.resource}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleUpdateRule("resource", e.target.value)
-                    }
-                    onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
-                      validateField("resource", e.target.value)
-                    }
-                    maxLength={16}
-                  />
-                  <span>Resource</span>
-                  <em
-                    data-tooltip-id="modal-tooltip"
-                    data-tooltip-content='Resource on which the permission will have effect(supports wildcard: "*")'
-                  >
-                    <Icon cType="info" className="icon3" />
-                  </em>
-                </label>
-                <Icon cType="chevron" direction="right" />
-                <label className="overlap fullWidth">
-                  <Input
-                    className={`fullWidth${
-                      ruleErrors.hasOwnProperty("permission") ? " error" : ""
-                    }`}
-                    value={rule.permission}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleUpdateRule("permission", e.target.value)
-                    }
-                    onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
-                      validateField("permission", e.target.value)
-                    }
-                    maxLength={16}
-                  />
-                  <span>Permission</span>
-                  <em
-                    data-tooltip-id="modal-tooltip"
-                    data-tooltip-content='The allowed action (supports wildcard: "*")'
-                  >
-                    <Icon cType="info" className="icon3" />
-                  </em>
-                </label>
-              </div>
+            ) : (
+              <p>Do you really want to delete the following permission?</p>
+            )}
+
+            <div className="inputs">
+              <label className="overlap fullWidth">
+                <Input
+                  className={`fullWidth${
+                    ruleErrors.hasOwnProperty("role") ? " error" : ""
+                  }`}
+                  value={rule.role}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleUpdateRule("role", e.target.value)
+                  }
+                  onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
+                    validateField("role", e.target.value)
+                  }
+                  readOnly={rule.readOnlyRole}
+                  maxLength={16}
+                />
+                <span>Role</span>
+                <em
+                  data-tooltip-id="modal-tooltip"
+                  data-tooltip-content="The Role getting the permission"
+                >
+                  <Icon cType="info" className="icon3" />
+                </em>
+              </label>
+              <Icon cType="chevron" direction="right" />
+              <label className="overlap fullWidth">
+                <Input
+                  className={`fullWidth${
+                    ruleErrors.hasOwnProperty("resource") ? " error" : ""
+                  }`}
+                  value={rule.resource}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleUpdateRule("resource", e.target.value)
+                  }
+                  onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
+                    validateField("resource", e.target.value)
+                  }
+                  readOnly={rule.readOnlyResource}
+                  maxLength={16}
+                />
+                <span>Resource</span>
+                <em
+                  data-tooltip-id="modal-tooltip"
+                  data-tooltip-content='Resource on which the permission will be applied (supports wildcard: "*")'
+                >
+                  <Icon cType="info" className="icon3" />
+                </em>
+              </label>
+              <Icon cType="chevron" direction="right" />
+              <label className="overlap fullWidth">
+                <Input
+                  className={`fullWidth${
+                    ruleErrors.hasOwnProperty("permission") ? " error" : ""
+                  }`}
+                  value={rule.permission}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleUpdateRule("permission", e.target.value)
+                  }
+                  onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
+                    validateField("permission", e.target.value)
+                  }
+                  readOnly={rule.readOnlyPermission}
+                  maxLength={16}
+                />
+                <span>Permission</span>
+                <em
+                  data-tooltip-id="modal-tooltip"
+                  data-tooltip-content='The allowed action (supports wildcard: "*")'
+                >
+                  <Icon cType="info" className="icon3" />
+                </em>
+              </label>
+            </div>
+            {rule.action === Actions.Create && (
               <div className="aligned mb-big">
                 <label
                   className="checkbox"
@@ -397,26 +570,30 @@ export default function Permissions({ router }) {
                   )}
                 </AnimatePresence>
               </div>
-              <div className="aligned end">
-                <Button
-                  onClick={() => addToStack()}
-                  disabled={!!Object.keys(ruleErrors).length}
-                >
-                  Add
-                </Button>
-                <Button
-                  className="button1"
-                  onClick={() => setModals({ ...modals, rule: false })}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </>
-          )}
+            )}
+            <div className="aligned end">
+              <Button
+                className={rule.action === Actions.Create ? "" : "button2"}
+                onClick={() => addToStack()}
+                disabled={!!Object.keys(ruleErrors).length}
+              >
+                {rule.action === Actions.Create ? "Add" : "Delete"}
+              </Button>
+              <Button
+                className="button1"
+                onClick={() => setModals({ ...modals, rule: false })}
+              >
+                Cancel
+              </Button>
+            </div>
+          </>
         </>
         <Tooltip id="modal-tooltip" />
       </Modal>
-      <CTA handleSave={Object.keys(txStack).length ? handleSave : null} />
+      <Tooltip id="main-tooltip" />
+      <AnimatePresence>
+        {!!Object.keys(txStack).length && <CTA handleSave={handleSave} />}
+      </AnimatePresence>
     </>
   );
 }

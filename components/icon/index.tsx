@@ -31,6 +31,8 @@ const Icons: IconTypes = {
   twitter: dynamic(() => import("./twitter")),
   permissions: dynamic(() => import("./permissions")),
   roles: dynamic(() => import("./roles")),
+  resources: dynamic(() => import("./resources")),
+  delete: dynamic(() => import("./delete")),
 };
 
 function Icon({ cType, ...props }: IconType) {

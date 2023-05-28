@@ -8,14 +8,10 @@ const Button = dynamic(() => import("../button"));
 
 export default function CTA({ handleSave }: CTAPropsType) {
   return (
-    <div className={styles.cta}>
-      <AnimatePresence>
-        {!!handleSave && (
-          <motion.div {...DEFAULT_ANIMATION}>
-            <Button className="save">Save changes</Button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    <motion.div className={styles.cta} {...DEFAULT_ANIMATION}>
+      <motion.div>
+        <Button className="save">Save changes</Button>
+      </motion.div>
+    </motion.div>
   );
 }

@@ -22,6 +22,9 @@ export interface ManageRuleType {
   resource: string;
   permission: string;
   expiresAt: number | null;
+  readOnlyRole: boolean;
+  readOnlyResource: boolean;
+  readOnlyPermission: boolean;
 }
 
 export interface ManageRuleErrorsType {
