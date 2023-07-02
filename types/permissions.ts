@@ -1,3 +1,4 @@
+import { TransactionInstruction } from "@solana/web3.js";
 import { namespaces } from "sol-cerberus-js";
 
 export enum Actions {
@@ -37,5 +38,5 @@ export interface ManageRuleErrorsType {
 }
 
 export interface TXStackType {
-  [id: string]: { type: Actions; ix: any };
+  [id: string]: TransactionInstruction;
 }

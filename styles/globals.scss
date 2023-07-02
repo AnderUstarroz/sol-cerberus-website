@@ -1,4 +1,5 @@
 @import "./fonts.scss";
+@import "./animations.scss";
 
 * {
   box-sizing: border-box;
@@ -166,10 +167,10 @@ button {
   }
 }
 
-button.pulsar0 {
-  animation: radial-pulse0 1.5s ease infinite;
-  -moz-animation: radial-pulse0 1.5s ease infinite;
-  -webkit-animation: radial-pulse0 1.5s ease infinite;
+button.pulsar {
+  animation: radial-pulse 1.5s ease infinite;
+  -moz-animation: radial-pulse 1.5s ease infinite;
+  -webkit-animation: radial-pulse 1.5s ease infinite;
 }
 
 .wallet-adapter-dropdown-list-item,
@@ -197,6 +198,13 @@ button.pulsar0 {
     background-color: #7c7370;
   }
 }
+.button5 {
+  background-color: var(--successColor);
+  &:hover {
+    background-color: #45beb6;
+  }
+}
+
 button.btnRadius2 {
   border-radius: 4px;
 }
@@ -406,6 +414,20 @@ a {
 
 .react-tooltip {
   text-shadow: 1px 1px 3px black;
+}
+
+/* Modal Styles */
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
 }
 
 @media (max-width: 1023px) {

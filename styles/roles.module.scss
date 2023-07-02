@@ -83,14 +83,23 @@
         }
       }
     }
-    .resource {
+    .addressType {
       background-color: rgb(144, 135, 135, 0.2);
       h4 {
         font-size: 16px;
         padding: 12px 11px 16px 10%;
+        > span {
+          cursor: unset;
+          > span {
+            text-transform: capitalize;
+          }
+          svg {
+            cursor: unset;
+          }
+        }
       }
     }
-    .permission {
+    .address {
       background-color: rgb(144, 135, 135, 0.2);
       h5 {
         display: flex;

@@ -21,15 +21,12 @@ function defaultButton(props: ButtonType) {
   );
 }
 
-export default function Button(props: any) {
-  const { cType, ...childProps } = props;
+export default function Button({ cType, disabled, children, ...props }: any) {
   const Button = Buttons.hasOwnProperty(cType) ? Buttons[cType] : defaultButton;
 
   return (
-    <Button
-      {...{ whileTap: props.disabled ? {} : { scale: 0.9 }, ...childProps }}
-    >
-      {props.children}
+    <Button {...{ whileTap: disabled ? {} : { scale: 0.9 }, ...props }}>
+      {children}
     </Button>
   );
 }

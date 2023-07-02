@@ -5,16 +5,16 @@
   justify-content: space-between;
   font-size: 1rem;
   font-weight: normal;
-  padding: 25px;
+  padding: 15px 35px 15px;
   border-radius: 5px;
 }
 .close {
   position: absolute;
-  top: 10px;
+  top: 5px;
   right: 10px;
 }
 .success {
-  background: rgba(33, 229, 111, 0.7);
+  background: var(--successColor);
   color: white;
 }
 

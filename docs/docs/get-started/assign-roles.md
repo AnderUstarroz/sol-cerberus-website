@@ -51,8 +51,14 @@ await solCerberus.program.methods
     expiresAt: null,
   })
   .accounts({
-    app: await solCerberus.getAppPda(),
     role: await sc_role_pda(scAppId, role, walletAddress),
+    solCerberusApp: await solCerberus.getAppPda(),
+    solCerberusRole: null,
+    solCerberusRule: null,
+    solCerberusToken: null,
+    solCerberusMetadata: null,
+    solCerberusSeed: null,
+
   })
   .rpc();
 ```
@@ -71,8 +77,14 @@ await solCerberus.program.methods
     expiresAt: null,
   })
   .accounts({
-    app: await solCerberus.getAppPda(),
     role: await sc_role_pda(scAppId, role, walletGettingRole),
+    solCerberusApp: await solCerberus.getAppPda(),
+    solCerberusRole: null,
+    solCerberusRule: null,
+    solCerberusToken: null,
+    solCerberusMetadata: null,
+    solCerberusSeed: null,
+
   })
   .rpc();
 ```
@@ -91,8 +103,13 @@ await solCerberus.program.methods
     expiresAt: null,
   })
   .accounts({
-    app: await solCerberus.getAppPda(),
     role: await sc_role_pda(scAppId, role, walletGettingRole),
+    solCerberusApp: await solCerberus.getAppPda(),
+    solCerberusRole: null,
+    solCerberusRule: null,
+    solCerberusToken: null,
+    solCerberusMetadata: null,
+    solCerberusSeed: null,
   })
   .rpc();
 ```

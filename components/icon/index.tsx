@@ -33,6 +33,10 @@ const Icons: IconTypes = {
   roles: dynamic(() => import("./roles")),
   resources: dynamic(() => import("./resources")),
   delete: dynamic(() => import("./delete")),
+  wallet: dynamic(() => import("./wallet")),
+  nft: dynamic(() => import("./nft")),
+  collection: dynamic(() => import("./collection")),
+  address: dynamic(() => import("./address")),
 };
 
 function Icon({ cType, ...props }: IconType) {

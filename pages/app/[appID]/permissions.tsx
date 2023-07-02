@@ -2,16 +2,20 @@ import Head from "next/head";
 // import { ReactNode, useState } from "react";
 import styles from "../../../styles/Permissions.module.scss";
 import dynamic from "next/dynamic";
-import { ReactNode, startTransition, useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
   CachedPermsType,
-  RolesType,
   SolCerberus,
+  cacheUpdated,
+  dateToRust,
   namespaces,
 } from "sol-cerberus-js";
-import * as anchor from "@project-serum/anchor";
-import { PublicKey } from "@solana/web3.js";
+import {
+  PublicKey,
+  Transaction,
+  TransactionInstruction,
+} from "@solana/web3.js";
 import { get_provider } from "../../../components/utils/sol-cerberus-app";
 import { format, addHours } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
@@ -27,6 +31,7 @@ import {
   TXStackType,
 } from "../../../types/permissions";
 import { format_time } from "../../../components/utils/dates";
+import { sc_rule_pda } from "sol-cerberus-js";
 
 const Menu = dynamic(() => import("../../../components/app/menu"));
 const Modal = dynamic(() => import("../../../components/modal"));
@@ -35,6 +40,7 @@ const CTA = dynamic(() => import("../../../components/cta"));
 const Button = dynamic(() => import("../../../components/button"));
 const Checkbox = dynamic(() => import("../../../components/checkbox"));
 const Input = dynamic(() => import("../../../components/input"));
+const Spinner = dynamic(() => import("../../../components/spinner"));
 const Breadcrumbs = dynamic(
   () => import("../../../components/app/breadcrumbs")
 );
@@ -52,17 +58,16 @@ const empty_rule = (): ManageRuleType => ({
 });
 
 export default function Permissions({ router }) {
-  const { publicKey, wallet } = useWallet();
+  const { publicKey, wallet, sendTransaction } = useWallet();
   const { connection } = useConnection();
+  const [loading, setLoading] = useState<boolean>(true);
   const [expanded, setExpanded] = useState<{ [k: string]: boolean }>({});
-  const [mainModal, setMainModal] = useState<ReactNode>(null);
   const [txStack, setTxStack] = useState<TXStackType>({});
   const [solCerberus, setSolCerberus] = useState<SolCerberus | null>(null);
-  const [rules, setRules] = useState<CachedPermsType>({});
+  const [rules, setRules] = useState<CachedPermsType | null>(null);
   const [rule, setRule] = useState<ManageRuleType>(empty_rule());
   const [ruleErrors, setRuleErrors] = useState<ManageRuleErrorsType>({});
   const [modals, setModals] = useState({
-    main: false,
     rule: false,
   });
 
@@ -80,13 +85,42 @@ export default function Permissions({ router }) {
     }
     return false;
   };
+
   const handleUpdateRule = (key: string, value: any) => {
     delete ruleErrors[key];
     setRuleErrors(ruleErrors);
     setRule({ ...rule, [key]: value });
   };
 
-  const handleSave = () => {};
+  const handleSave = async () => {
+    if (!Object.keys(txStack).length) return;
+    try {
+      const latestBlockHash = await connection.getLatestBlockhash();
+      const tx = new Transaction(latestBlockHash);
+      Object.values(txStack).map((ix: TransactionInstruction) => tx.add(ix));
+      const appData = await solCerberus.getAppData();
+      if (appData.cached) {
+        tx.add(
+          await solCerberus.program.methods
+            .updateCache(cacheUpdated.Rules)
+            .accounts({ app: solCerberus.appPda })
+            .instruction()
+        );
+      }
+      await connection.confirmTransaction({
+        blockhash: latestBlockHash.blockhash,
+        lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+        signature: await sendTransaction(tx, connection),
+      });
+      startTransition(() => {
+        setTxStack({});
+        flashMsg("Changes saved in the Blockchain", "success");
+      });
+    } catch (e) {
+      flashMsg("Transaction failed! The changes could not be saved :(");
+      console.error(e);
+    }
+  };
 
   const showRuleModal = (defaultRule: ManageRuleType) => {
     startTransition(() => {
@@ -96,16 +130,63 @@ export default function Permissions({ router }) {
     });
   };
 
-  const addToStack = () => {
+  const addRuleIx = async (): Promise<TransactionInstruction> =>
+    solCerberus.program.methods
+      .addRule({
+        namespace: rule.namespace,
+        role: rule.role,
+        resource: rule.resource,
+        permission: rule.permission,
+        expiresAt: rule.expiresAt ? dateToRust(new Date(rule.expiresAt)) : null,
+      })
+      .accounts({
+        rule: await sc_rule_pda(
+          solCerberus.appId,
+          rule.role,
+          rule.resource,
+          rule.permission
+        ),
+        solCerberusApp: solCerberus.appPda,
+        solCerberusRole: null,
+        solCerberusRule: null,
+        solCerberusRule2: null,
+        solCerberusToken: null,
+        solCerberusMetadata: null,
+        solCerberusSeed: null,
+      })
+      .instruction();
+
+  const deleteRuleIx = async (): Promise<TransactionInstruction> =>
+    solCerberus.program.methods
+      .deleteRule()
+      .accounts({
+        rule: await sc_rule_pda(
+          solCerberus.appId,
+          rule.role,
+          rule.resource,
+          rule.permission
+        ),
+        collector: publicKey,
+        solCerberusApp: solCerberus.appPda,
+        solCerberusRole: null,
+        solCerberusRule: null,
+        solCerberusRule2: null,
+        solCerberusToken: null,
+        solCerberusMetadata: null,
+        solCerberusSeed: null,
+      })
+      .instruction();
+
+  const addToStack = async () => {
     if (!solCerberus) return;
     for (const field of ["role", "resource", "permission", "expiresAt"]) {
       if (!validateField(field, rule[field])) {
-        break;
+        return;
       }
     }
     if (Object.keys(txStack).length >= 10) {
       flashMsg(
-        "Maximum transaction stack reached! You need to save your changes in order to be able to apply more changes.",
+        "Maximum transaction stack reached! You need to save in order to be able to apply more changes.",
         "error",
         10000
       );
@@ -134,54 +215,54 @@ export default function Permissions({ router }) {
       delete txStack[ruleKey];
       // Add Instruction otherwise
     } else {
-      txStack[ruleKey] = {
-        type: rule.action,
-        ix: "TODOOOO",
-      };
+      txStack[ruleKey] = await (rule.action === Actions.Create
+        ? addRuleIx()
+        : deleteRuleIx());
     }
-    let newRules = { ...rules };
+
+    let displayedRules = { ...rules };
     // Update Rules to reflect the change:
     if (rule.action === Actions.Create) {
       // Add Rule
-      newRules = solCerberus.addPerm(
+      displayedRules = solCerberus.addPerm(
         rules,
         rule.namespace,
         rule.role,
         rule.resource,
         rule.permission,
-        0,
         rule.expiresAt
       );
     } else {
       // Delete Rule
-      delete newRules[rule.namespace][rule.role][rule.resource][
+      delete displayedRules[rule.namespace][rule.role][rule.resource][
         rule.permission
       ];
     }
-    console.log(newRules);
     // Reflect change on rules
     startTransition(() => {
+      // Expand newly created rules
+      if (rule.action === Actions.Create) {
+        setExpanded({
+          ...expanded,
+          [rule.role]: true,
+          [`${rule.role}-${rule.resource}`]: true,
+        });
+      }
       setRule(empty_rule());
-      setRules(newRules);
+      setRules(displayedRules);
       setTxStack(txStack);
       setModals({ ...modals, rule: false });
     });
   };
 
-  const setMainModalContent = (content: any, show = true) => {
-    startTransition(() => {
-      if (show) {
-        setMainModal(content);
-      }
-      setModals({ ...modals, main: show });
-    });
-  };
-
   const clearStates = () => {
     startTransition(() => {
-      setSolCerberus(null);
-      setRules({});
+      setRules(null);
       setTxStack({});
+      if (solCerberus) {
+        solCerberus.destroy(); // Remove Websockets listeners
+        setSolCerberus(null);
+      }
     });
   };
 
@@ -194,27 +275,33 @@ export default function Permissions({ router }) {
       }
       return;
     }
+    let sc = null;
     if (solCerberus) return;
     (async () => {
-      const sc = new SolCerberus(
+      sc = new SolCerberus(
         new PublicKey(appId),
         get_provider(connection, wallet)
       );
       const allRules = await sc.fetchPerms();
       startTransition(() => {
+        setLoading(false);
         setSolCerberus(sc);
         setRules(allRules);
       });
     })();
-  }, [publicKey]);
 
-  // STEP 2: Load something else
-  useEffect(() => {}, [solCerberus]);
+    // Cleanup SolCerberus
+    return () => {
+      if (sc) {
+        sc.destroy(); // Remove listeners
+      }
+    };
+  }, [publicKey]);
 
   return (
     <>
       <Head>
-        <title>Sol Cerberus APP {section}</title>
+        <title>Sol Cerberus APP permissions</title>
         <link rel="icon" href="/favicon.ico" />
         <meta name="description" content={`Sol Cerberus APP ${section}`} />
       </Head>
@@ -230,179 +317,229 @@ export default function Permissions({ router }) {
           </Button>
         </div>
         <section>
-          {!!Object.keys(rules).length && (
-            <ul className="role">
-              <AnimatePresence>
-                {Object.entries(rules[namespaces.Rule]).map(
-                  ([role, resources]) => (
-                    <motion.li key={`role-${role}`} {...DEFAULT_ANIMATION}>
-                      <h3>
-                        <span>
-                          <em>Role</em>
-                          <Icon cType="roles" />
-                          <span>{role}</span>
-                        </span>
-                        <div className="aligned">
-                          <Button
-                            className="button1 sm"
-                            onClick={() =>
-                              showRuleModal({
-                                ...empty_rule(),
-                                role: role,
-                                readOnlyRole: true,
-                                readOnlyResource: false,
-                              })
-                            }
+          {loading ? (
+            <motion.div
+              key={"spinner"}
+              className={styles.loading}
+              {...DEFAULT_ANIMATION}
+            >
+              <Spinner />
+            </motion.div>
+          ) : (
+            rules &&
+            !!Object.keys(rules).length && (
+              <ul className="role">
+                <AnimatePresence>
+                  {Object.entries(rules[namespaces.Rule]).map(
+                    ([role, resources]) => (
+                      <motion.li key={`role-${role}`} {...DEFAULT_ANIMATION}>
+                        <h3>
+                          <span
+                            title="Copy role"
+                            onClick={() => {
+                              navigator.clipboard.writeText(role);
+                              flashMsg("Role copied", "info", 2000);
+                            }}
                           >
-                            Add
-                          </Button>
-                          <Button
-                            className="expand"
-                            cType="transparent"
-                            onClick={() =>
-                              startTransition(() =>
-                                setExpanded({
-                                  ...expanded,
-                                  [role]: !expanded[role],
+                            <em>Role</em>
+                            <Icon cType="roles" />
+                            <span>
+                              {role} <em>({Object.keys(resources).length})</em>
+                            </span>
+                          </span>
+                          <div className="aligned">
+                            <Button
+                              title="Add a resource and permission to this Role"
+                              className="button1 sm"
+                              onClick={() =>
+                                showRuleModal({
+                                  ...empty_rule(),
+                                  role: role,
+                                  readOnlyRole: true,
+                                  readOnlyResource: false,
                                 })
-                              )
-                            }
-                          >
-                            {expanded[role] ? "-" : "+"}
-                          </Button>
-                        </div>
-                      </h3>
-                      <ul
-                        className={`resource${
-                          expanded[role] ? " expanded" : ""
-                        }`}
-                      >
-                        {Object.entries(resources).map(
-                          ([resource, permissions]) => (
-                            <li key={`resource-${resource}`}>
-                              <h4>
-                                <span>
-                                  <em>Resource</em>
-                                  <Icon cType="resources" />{" "}
-                                  <span>{resource}</span>
-                                </span>
-                                <div className="aligned">
-                                  <Button
-                                    className="button1 sm"
-                                    onClick={() =>
-                                      showRuleModal({
-                                        ...empty_rule(),
-                                        role: role,
-                                        resource: resource,
-                                        readOnlyRole: true,
-                                        readOnlyResource: true,
-                                      })
-                                    }
+                              }
+                            >
+                              Add
+                            </Button>
+                            <Button
+                              className="expand"
+                              cType="transparent"
+                              title={expanded[role] ? "Collapse" : "Expand"}
+                              onClick={() =>
+                                startTransition(() =>
+                                  setExpanded({
+                                    ...expanded,
+                                    [role]: !expanded[role],
+                                  })
+                                )
+                              }
+                            >
+                              {expanded[role] ? "-" : "+"}
+                            </Button>
+                          </div>
+                        </h3>
+                        <ul
+                          className={`resource${
+                            expanded[role] ? " expanded" : ""
+                          }`}
+                        >
+                          {Object.entries(resources).map(
+                            ([resource, permissions]) => (
+                              <li key={`resource-${resource}`}>
+                                <h4>
+                                  <span
+                                    title="Copy resource"
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(resource);
+                                      flashMsg("Resource copied", "info", 2000);
+                                    }}
                                   >
-                                    Add
-                                  </Button>
-                                  <Button
-                                    className="expand"
-                                    cType="transparent"
-                                    onClick={() =>
-                                      startTransition(() =>
-                                        setExpanded({
-                                          ...expanded,
-                                          [`${role}-${resource}`]:
-                                            !expanded[`${role}-${resource}`],
+                                    <em>Resource</em>
+                                    <Icon cType="resources" />{" "}
+                                    <span>
+                                      {resource}{" "}
+                                      <em>
+                                        ({Object.keys(permissions).length})
+                                      </em>
+                                    </span>
+                                  </span>
+                                  <div className="aligned">
+                                    <Button
+                                      title="Add a permission to this resource"
+                                      className="button1 sm"
+                                      onClick={() =>
+                                        showRuleModal({
+                                          ...empty_rule(),
+                                          role: role,
+                                          resource: resource,
+                                          readOnlyRole: true,
+                                          readOnlyResource: true,
                                         })
-                                      )
-                                    }
-                                  >
-                                    {expanded[`${role}-${resource}`]
-                                      ? "-"
-                                      : "+"}
-                                  </Button>
-                                </div>
-                              </h4>
-                              <ul
-                                className={`permission${
-                                  expanded[`${role}-${resource}`]
-                                    ? " expanded"
-                                    : ""
-                                }`}
-                              >
-                                {Object.entries(permissions).map(
-                                  ([permission, data]) => (
-                                    <li key={`permission-${permission}`}>
-                                      <h5>
-                                        <span>
-                                          <Icon cType="permissions" />{" "}
-                                          <span>{permission}</span>
-                                          <em>Permission</em>
-                                        </span>
-                                        {!!data.expiresAt &&
-                                          (data.expiresAt <
-                                          new Date().getTime() ? (
-                                            <div
-                                              className="expires aligned error"
+                                      }
+                                    >
+                                      Add
+                                    </Button>
+                                    <Button
+                                      className="expand"
+                                      cType="transparent"
+                                      onClick={() =>
+                                        startTransition(() =>
+                                          setExpanded({
+                                            ...expanded,
+                                            [`${role}-${resource}`]:
+                                              !expanded[`${role}-${resource}`],
+                                          })
+                                        )
+                                      }
+                                    >
+                                      {expanded[`${role}-${resource}`]
+                                        ? "-"
+                                        : "+"}
+                                    </Button>
+                                  </div>
+                                </h4>
+                                <ul
+                                  className={`permission${
+                                    expanded[`${role}-${resource}`]
+                                      ? " expanded"
+                                      : ""
+                                  }`}
+                                >
+                                  <AnimatePresence>
+                                    {Object.entries(permissions).map(
+                                      ([permission, data]) => (
+                                        <motion.li
+                                          key={`permission-${permission}`}
+                                          {...DEFAULT_ANIMATION}
+                                        >
+                                          <h5>
+                                            <span
+                                              title="Copy permission"
+                                              onClick={() => {
+                                                navigator.clipboard.writeText(
+                                                  permission
+                                                );
+                                                flashMsg(
+                                                  "Permission copied",
+                                                  "info",
+                                                  2000
+                                                );
+                                              }}
+                                            >
+                                              <Icon cType="permissions" />{" "}
+                                              <span>{permission}</span>
+                                              <em>Permission</em>
+                                            </span>
+                                            {!!data.expiresAt &&
+                                              (data.expiresAt <
+                                              new Date().getTime() ? (
+                                                <div
+                                                  className="expires aligned error"
+                                                  data-tooltip-id="main-tooltip"
+                                                  data-tooltip-content={`Expired: ${format_time(
+                                                    new Date(data.expiresAt)
+                                                  )}`}
+                                                  data-tooltip-variant="error"
+                                                >
+                                                  <Icon
+                                                    cType="exclamation"
+                                                    className="icon1"
+                                                    width={17}
+                                                    height={17}
+                                                  />{" "}
+                                                  Expired{" "}
+                                                </div>
+                                              ) : (
+                                                <div className="expires">
+                                                  Expires:{" "}
+                                                  {format_time(
+                                                    new Date(data.expiresAt)
+                                                  )}
+                                                </div>
+                                              ))}
+                                          </h5>
+                                          <div>
+                                            <Button
                                               data-tooltip-id="main-tooltip"
-                                              data-tooltip-content={`Expired: ${format_time(
-                                                new Date(data.expiresAt)
-                                              )}`}
+                                              data-tooltip-content="Delete permission"
                                               data-tooltip-variant="error"
+                                              cType="transparent"
+                                              onClick={() =>
+                                                showRuleModal({
+                                                  namespace: namespaces.Rule,
+                                                  role: role,
+                                                  resource: resource,
+                                                  permission: permission,
+                                                  action: Actions.Delete,
+                                                  expiresAt: null,
+                                                  readOnlyRole: true,
+                                                  readOnlyResource: true,
+                                                  readOnlyPermission: true,
+                                                })
+                                              }
                                             >
                                               <Icon
-                                                cType="exclamation"
-                                                className="icon1"
-                                                width={17}
-                                                height={17}
-                                              />{" "}
-                                              Expired{" "}
-                                            </div>
-                                          ) : (
-                                            <div className="expires">
-                                              Expires:{" "}
-                                              {format_time(
-                                                new Date(data.expiresAt)
-                                              )}
-                                            </div>
-                                          ))}
-                                      </h5>
-                                      <div>
-                                        <Button
-                                          data-tooltip-id="main-tooltip"
-                                          data-tooltip-content="Delete permission"
-                                          data-tooltip-variant="error"
-                                          cType="transparent"
-                                          onClick={() =>
-                                            showRuleModal({
-                                              namespace: namespaces.Rule,
-                                              role: role,
-                                              resource: resource,
-                                              permission: permission,
-                                              action: Actions.Delete,
-                                              expiresAt: null,
-                                              readOnlyRole: true,
-                                              readOnlyResource: true,
-                                              readOnlyPermission: true,
-                                            })
-                                          }
-                                        >
-                                          <Icon
-                                            cType="delete"
-                                            className="icon2"
-                                          />
-                                        </Button>
-                                      </div>
-                                    </li>
-                                  )
-                                )}
-                              </ul>
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    </motion.li>
-                  )
-                )}
-              </AnimatePresence>
-            </ul>
+                                                cType="delete"
+                                                className="icon2"
+                                              />
+                                            </Button>
+                                          </div>
+                                        </motion.li>
+                                      )
+                                    )}
+                                  </AnimatePresence>
+                                </ul>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </motion.li>
+                    )
+                  )}
+                </AnimatePresence>
+              </ul>
+            )
           )}
         </section>
       </div>

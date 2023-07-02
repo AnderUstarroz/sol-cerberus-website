@@ -76,15 +76,21 @@ const permission = "Add";
 
 await solCerberus.program.methods
   .addRule({
-    namespace: namespaces.Default,
+    namespace: namespaces.Rule,
     role: role,
     resource: resource,
     permission: permission,
     expiresAt: null,
   })
   .accounts({
-    app: await solCerberus.getAppPda(),
     rule: await sc_rule_pda(scAppId, role, resource, permission)
+    solCerberusApp: await solCerberus.getAppPda(),
+    solCerberusRole: null,
+    solCerberusRule: null,
+    solCerberusRule2: null,
+    solCerberusToken: null,
+    solCerberusMetadata: null,
+    solCerberusSeed: null,
   })
   .rpc();
 ```

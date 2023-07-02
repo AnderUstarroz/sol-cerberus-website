@@ -26,10 +26,11 @@ html {
 
   --textColor2: #8c8494;
   --mainColor: #e3be59;
+  --successColor: #35b7af;
   --errorBg: #bd2742;
 
   //Tooltip
-  --rt-color-success: green !important;
+  --rt-color-success: var(--successColor) !important;
   --rt-color-warning: green !important;
   --rt-color-info: green !important;
   --rt-color-error: var(--errorBg) !important;
