@@ -8,9 +8,7 @@ import {
   RoleType,
   SolCerberus,
   cacheUpdated,
-  dateToRust,
   rolesGroupedBy,
-  sc_role_pda,
   short_key,
 } from "sol-cerberus-js";
 import { get_provider } from "../../../components/utils/sol-cerberus-app";
@@ -136,48 +134,6 @@ export default function Roles({ router }) {
     return false;
   };
 
-  const addRoleIx = async (): Promise<TransactionInstruction> =>
-    solCerberus.program.methods
-      .assignRole({
-        role: role.role,
-        addressType: { wallet: {} },
-        address: role.address === "*" ? null : new PublicKey(role.address),
-        expiresAt: role.expiresAt ? dateToRust(new Date(role.expiresAt)) : null,
-      })
-      .accounts({
-        role: await sc_role_pda(
-          solCerberus.appId,
-          role.role,
-          role.address === "*" ? role.address : new PublicKey(role.address)
-        ),
-        solCerberusApp: solCerberus.appPda,
-        solCerberusRole: null,
-        solCerberusRule: null,
-        solCerberusToken: null,
-        solCerberusMetadata: null,
-        solCerberusSeed: null,
-      })
-      .instruction();
-
-  const deleteRoleIx = async (): Promise<TransactionInstruction> =>
-    solCerberus.program.methods
-      .deleteAssignedRole()
-      .accounts({
-        role: await sc_role_pda(
-          solCerberus.appId,
-          role.role,
-          role.address === "*" ? role.address : new PublicKey(role.address)
-        ),
-        collector: publicKey,
-        solCerberusApp: solCerberus.appPda,
-        solCerberusRole: null,
-        solCerberusRule: null,
-        solCerberusToken: null,
-        solCerberusMetadata: null,
-        solCerberusSeed: null,
-      })
-      .instruction();
-
   const addToStack = async () => {
     if (!solCerberus) return;
     for (const field of ["role", "address", "addressType", "expiresAt"]) {
@@ -217,14 +173,20 @@ export default function Roles({ router }) {
       delete txStack[roleKey];
       // Add Instruction otherwise
     } else {
-      txStack[roleKey] = await (role.action === Actions.Create
-        ? addRoleIx()
-        : deleteRoleIx());
+      txStack[roleKey] = (await (role.action === Actions.Create
+        ? solCerberus.assignRole(role.role, addressTypes.Wallet, role.address, {
+            expiresAt: role.expiresAt ? new Date(role.expiresAt) : null,
+            getIx: true,
+          })
+        : solCerberus.deleteAssignedRole(
+            role.role,
+            addressTypes.Wallet,
+            role.address,
+            { getIx: true }
+          ))) as TransactionInstruction;
     }
-
     let displayedRoles = { ...roles };
     // Update Roles to reflect the change:
-    // @TODO FIX THIS
     if (role.action === Actions.Create) {
       // Add Role
       displayedRoles = addRole(displayedRoles, role);
@@ -266,6 +228,7 @@ export default function Roles({ router }) {
   const handleSave = async () => {
     if (!Object.keys(txStack).length) return;
     try {
+      startTransition(() => setLoading(true));
       const latestBlockHash = await connection.getLatestBlockhash();
       const tx = new Transaction(latestBlockHash);
       Object.values(txStack).map((ix: TransactionInstruction) => tx.add(ix));
@@ -291,6 +254,7 @@ export default function Roles({ router }) {
       flashMsg("Transaction failed! The changes could not be saved :(");
       console.error(e);
     }
+    startTransition(() => setLoading(false));
   };
   // STEP 1: Init Sol Cerberus and roles
   useEffect(() => {
@@ -310,7 +274,7 @@ export default function Roles({ router }) {
         { permsAutoUpdate: false }
       );
       let allRoles = sortRoles(
-        await sc.fetchAssignedRoles([], true, rolesGroupedBy.None)
+        await sc.fetchAllRoles({ groupBy: rolesGroupedBy.None })
       );
       startTransition(() => {
         setRoles(allRoles);
@@ -745,7 +709,9 @@ export default function Roles({ router }) {
       </Modal>
       <Tooltip id="main-tooltip" />
       <AnimatePresence>
-        {!!Object.keys(txStack).length && <CTA handleSave={handleSave} />}
+        {!!Object.keys(txStack).length && !loading && (
+          <CTA handleSave={handleSave} />
+        )}
       </AnimatePresence>
     </>
   );

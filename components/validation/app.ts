@@ -13,14 +13,24 @@ export class AppError extends Error {
 }
 
 export function nameValidator(value: string) {
-  if (!value || value.length > 64) {
-    let error = !value ? "empty" : "longer than 64 characters";
+  if (!value || value.length > 16) {
+    let error = !value ? "empty" : "longer than 16 characters";
     throw new AppError("name", `APP name cannot be ${error}`);
   }
 }
 
-export function recoveryValidator(value: string) {
+export function authorityValidator(value: string | PublicKey) {
   try {
+    if (value?.constructor?.name === "PublicKey") return;
+    new PublicKey(value);
+  } catch (e) {
+    throw new AppError("authority", `Invalid Authority wallet address`);
+  }
+}
+
+export function recoveryValidator(value: string | PublicKey) {
+  try {
+    if (value?.constructor?.name === "PublicKey") return;
     if (value) {
       new PublicKey(value);
     }
@@ -31,6 +41,7 @@ export function recoveryValidator(value: string) {
 
 export const VALIDATORS: { [key: string]: any } = {
   nameValidator,
+  authorityValidator,
   recoveryValidator,
 };
 

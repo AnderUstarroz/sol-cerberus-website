@@ -8,7 +8,7 @@ function Collection(props: IconType) {
       x="0px"
       y="0px"
       viewBox="0 0 1000 1000"
-      enable-background="new 0 0 1000 1000"
+      enableBackground="new 0 0 1000 1000"
       xmlSpace="preserve"
       width={props.width ? props.width : 20}
       height={props.height ? props.height : 20}

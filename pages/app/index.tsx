@@ -70,8 +70,8 @@ export default function Apps({ router }) {
     setNewApp({ ...newApp, [key]: value });
   };
 
-  const loadApps = async (pubkey: PublicKey) =>
-    (
+  const loadApps = async (pubkey: PublicKey) => {
+    const myApps = (
       await solCerberus.program.account.app.all([
         {
           memcmp: {
@@ -81,6 +81,11 @@ export default function Apps({ router }) {
         },
       ])
     ).map((row) => row.account);
+    startTransition(() => {
+      setApps(myApps);
+      setLoading(false);
+    });
+  };
 
   const handleSave = async () => {
     // Exit if there are existing errors:
@@ -111,6 +116,7 @@ export default function Apps({ router }) {
       setLoading(false);
     });
   };
+
   // STEP 1: Init
   useEffect(() => {
     if (!publicKey) {
@@ -128,16 +134,22 @@ export default function Apps({ router }) {
 
   // STEP 2: load APPs
   useEffect(() => {
-    if (!solCerberus) {
-      return;
-    }
-    (async () => {
-      const myApps = await loadApps(publicKey);
-      startTransition(() => {
-        setApps(myApps);
-        setLoading(false);
-      });
-    })();
+    if (!solCerberus) return;
+    loadApps(publicKey);
+
+    // Add listener to refresh list of apps whenever they change
+    const appListener = solCerberus.program.addEventListener(
+      "AppChanged",
+      async (event, slot) => {
+        if (event.authority.toBase58() === publicKey.toBase58()) {
+          startTransition(() => setLoading(true));
+          loadApps(publicKey);
+        }
+      }
+    );
+    return () => {
+      solCerberus.program.removeEventListener(appListener);
+    };
   }, [solCerberus]);
 
   return (
@@ -186,7 +198,18 @@ export default function Apps({ router }) {
                             <div>Recovery wallet:</div>
                           </div>
                           <div>
-                            <div>{short_key(app.id.toBase58())}</div>
+                            <div
+                              className="copy"
+                              title="Copy APP ID"
+                              onClick={() => {
+                                navigator.clipboard.writeText(
+                                  app.id.toBase58()
+                                );
+                                flashMsg("APP ID copied", "info", 2000);
+                              }}
+                            >
+                              {short_key(app.id.toBase58())}
+                            </div>
                             <div>{app.cached ? "Yes" : "No"}</div>
                             <div>
                               {app.recovery

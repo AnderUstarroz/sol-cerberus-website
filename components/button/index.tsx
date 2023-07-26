@@ -8,13 +8,11 @@ const Buttons: ButtonTypes = {
   wallet: dynamic(() => import("./wallet")),
 };
 
-function defaultButton(props: ButtonType) {
+function defaultButton({ className, ...props }: ButtonType) {
   return (
     <motion.button
       {...props}
-      className={
-        (props.className ? `${props.className} ` : "") + styles.default
-      }
+      className={`${className ?? ""} ${styles.default}`}
     >
       {props.children}
     </motion.button>
@@ -25,7 +23,13 @@ export default function Button({ cType, disabled, children, ...props }: any) {
   const Button = Buttons.hasOwnProperty(cType) ? Buttons[cType] : defaultButton;
 
   return (
-    <Button {...{ whileTap: disabled ? {} : { scale: 0.9 }, ...props }}>
+    <Button
+      {...{
+        whileTap: disabled ? {} : { scale: 0.9 },
+        disabled: disabled,
+        ...props,
+      }}
+    >
       {children}
     </Button>
   );

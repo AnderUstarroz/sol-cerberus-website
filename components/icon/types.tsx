@@ -11,6 +11,8 @@ export interface IconType {
   style?: { [key: string]: any };
   onClick?: MouseEventHandler<SVGSVGElement>;
   direction?: string;
+  "data-tooltip-id"?: string;
+  "data-tooltip-content"?: string;
 }
 
 export interface IconTypes {
