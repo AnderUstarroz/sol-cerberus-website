@@ -36,7 +36,7 @@ Sol Cerberus includes built-in authentication for added convenience:
 ## How does it work?
 Sol Cerberus provides [Rust] and [NPM] packages to easily integrate a powerful [RBAC] system into your [Solana Anchor programs] and frontends. 
 
-Let's take a quick look at our [Anchor demo program], just by using the `#[rule(Square, Add)]` annotation, we can restrict the execution of the `add_square()` transaction only to users with an assigned role which have the `Add` permission on the `Square` resource:
+Let's take a quick look at our [Anchor demo program], just by using the `#[rule(Square, Add)]` annotation, we can restrict the execution of the `add_square()` instruction only to users whose assigned role has the `Add` permission on the `Square` resource:
 
 ```rust
 #[program]

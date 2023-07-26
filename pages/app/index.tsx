@@ -1,19 +1,13 @@
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import Head from "next/head";
-import { ReactNode, startTransition, useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import styles from "../../styles/Apps.module.scss";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { DEFAULT_ANIMATION } from "../../components/utils/animation";
-import {
-  SolCerberus,
-  SolCerberusTypes,
-  sc_app_pda,
-  short_key,
-} from "sol-cerberus-js";
+import { SolCerberus, SolCerberusTypes, short_key } from "sol-cerberus-js";
 import * as anchor from "@project-serum/anchor";
-import { get_provider } from "../../components/utils/sol-cerberus-app";
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { Tooltip } from "react-tooltip";
 import { AppError, validateInput } from "../../components/validation/app";
 import { flashMsg } from "../../components/utils/helpers";
@@ -46,6 +40,7 @@ export default function Apps({ router }) {
   });
 
   const clearStates = () => {
+    if (solCerberus) solCerberus.disconnect(); // Remove Websockets listeners
     startTransition(() => {
       setSolCerberus(null);
       setApps([]);
@@ -70,8 +65,8 @@ export default function Apps({ router }) {
     setNewApp({ ...newApp, [key]: value });
   };
 
-  const loadApps = async (pubkey: PublicKey) =>
-    (
+  const loadApps = async (pubkey: PublicKey) => {
+    const myApps = (
       await solCerberus.program.account.app.all([
         {
           memcmp: {
@@ -81,6 +76,11 @@ export default function Apps({ router }) {
         },
       ])
     ).map((row) => row.account);
+    startTransition(() => {
+      setApps(myApps);
+      setLoading(false);
+    });
+  };
 
   const handleSave = async () => {
     // Exit if there are existing errors:
@@ -91,18 +91,13 @@ export default function Apps({ router }) {
     }
     setLoading(true);
     try {
-      const newAppId = Keypair.generate().publicKey;
-      await solCerberus.program.methods
-        .initializeApp({
-          id: newAppId,
-          recovery: newApp.recovery ? newApp.recovery : null,
-          name: newApp.name,
+      await solCerberus.initializeApp(
+        newApp.name,
+        newApp.recovery ? newApp.recovery : null,
+        {
           cached: newApp.cached,
-        })
-        .accounts({
-          app: await sc_app_pda(newAppId),
-        })
-        .rpc();
+        }
+      );
     } catch (e) {
       console.error(e);
     }
@@ -111,33 +106,36 @@ export default function Apps({ router }) {
       setLoading(false);
     });
   };
+
   // STEP 1: Init
   useEffect(() => {
     if (!publicKey) {
       // Clear all data when user's wallet has been disconnected
-      if (solCerberus) {
-        clearStates();
-      }
-      return;
+      return clearStates();
     }
     if (solCerberus) return;
-    setSolCerberus(
-      new SolCerberus(publicKey, get_provider(connection, wallet))
-    );
+    setSolCerberus(new SolCerberus(connection, wallet));
+    return () => clearStates();
   }, [publicKey]);
 
   // STEP 2: load APPs
   useEffect(() => {
-    if (!solCerberus) {
-      return;
-    }
-    (async () => {
-      const myApps = await loadApps(publicKey);
-      startTransition(() => {
-        setApps(myApps);
-        setLoading(false);
-      });
-    })();
+    if (!solCerberus) return;
+    loadApps(publicKey);
+
+    // Add listener to refresh list of apps whenever they change
+    const appListener = solCerberus.program.addEventListener(
+      "AppChanged",
+      async (event, slot) => {
+        if (event.authority.toBase58() === publicKey.toBase58()) {
+          startTransition(() => setLoading(true));
+          loadApps(publicKey);
+        }
+      }
+    );
+    return () => {
+      solCerberus.program.removeEventListener(appListener);
+    };
   }, [solCerberus]);
 
   return (
@@ -186,7 +184,18 @@ export default function Apps({ router }) {
                             <div>Recovery wallet:</div>
                           </div>
                           <div>
-                            <div>{short_key(app.id.toBase58())}</div>
+                            <div
+                              className="copy"
+                              title="Copy APP ID"
+                              onClick={() => {
+                                navigator.clipboard.writeText(
+                                  app.id.toBase58()
+                                );
+                                flashMsg("APP ID copied", "info", 2000);
+                              }}
+                            >
+                              {short_key(app.id.toBase58())}
+                            </div>
                             <div>{app.cached ? "Yes" : "No"}</div>
                             <div>
                               {app.recovery

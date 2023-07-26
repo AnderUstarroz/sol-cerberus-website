@@ -8,7 +8,7 @@ function Wallet(props: IconType) {
       x="0px"
       y="0px"
       viewBox="0 0 1000 1000"
-      enable-background="new 0 0 1000 1000"
+      enableBackground="new 0 0 1000 1000"
       xmlSpace="preserve"
       className={props.className ? props.className : ""}
       width={props.width ? props.width : 25}

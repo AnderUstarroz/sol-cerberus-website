@@ -12,7 +12,6 @@ export default function Award(props: IconType) {
       x="0px"
       y="0px"
       viewBox="0 0 398.963 398.963"
-      //style="enable-background:new 0 0 398.963 398.963;"
     >
       <g id="_x33_8-Award_symbol">
         <g>

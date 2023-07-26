@@ -12,7 +12,6 @@ export default function Close(props: IconType) {
       viewBox="0 0 240 240"
       width={props.width ? props.width : 25}
       height={props.height ? props.height : 25}
-      //style="enable-background:new 0 0 240 240;"
     >
       <path
         fill={props.color ? props.color : "var(--iconFill0)"}

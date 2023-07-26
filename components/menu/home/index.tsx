@@ -49,13 +49,13 @@ export default function HomeMenu({ toggle }: HomeMenuType) {
         </Button>
       </MenuItem>
 
-      <MenuItem whileTap={{}} whileHover={{}}>
+      {/* <MenuItem whileTap={{}} whileHover={{}}>
         <Button cType="transparent">
           <Link href="/app" title="Documentation" onClick={toggle}>
             APPs
           </Link>
         </Button>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem whileTap={{}} whileHover={{}}>
         <Button cType="transparent">
           <Link

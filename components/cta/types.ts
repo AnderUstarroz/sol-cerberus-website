@@ -1,3 +1,4 @@
 export interface CTAPropsType {
-  handleSave: Function;
+  handleSave?: Function;
+  handleCancel?: Function;
 }

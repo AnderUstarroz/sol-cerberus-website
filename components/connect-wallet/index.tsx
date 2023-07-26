@@ -14,7 +14,7 @@ export default function ConnectWallet() {
       >
         <div>
           <h1>Welcome</h1>
-          <p>Connect your wallet to access dashboard</p>
+          <p className="mb-big">Connect your wallet to access dashboard</p>
           <Button cType="wallet" />
         </div>
       </motion.div>

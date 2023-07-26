@@ -8,7 +8,6 @@ import {
   CachedPermsType,
   SolCerberus,
   cacheUpdated,
-  dateToRust,
   namespaces,
 } from "sol-cerberus-js";
 import {
@@ -16,7 +15,6 @@ import {
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
-import { get_provider } from "../../../components/utils/sol-cerberus-app";
 import { format, addHours } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import { DEFAULT_ANIMATION } from "../../../components/utils/animation";
@@ -31,7 +29,6 @@ import {
   TXStackType,
 } from "../../../types/permissions";
 import { format_time } from "../../../components/utils/dates";
-import { sc_rule_pda } from "sol-cerberus-js";
 
 const Menu = dynamic(() => import("../../../components/app/menu"));
 const Modal = dynamic(() => import("../../../components/modal"));
@@ -95,6 +92,7 @@ export default function Permissions({ router }) {
   const handleSave = async () => {
     if (!Object.keys(txStack).length) return;
     try {
+      startTransition(() => setLoading(true));
       const latestBlockHash = await connection.getLatestBlockhash();
       const tx = new Transaction(latestBlockHash);
       Object.values(txStack).map((ix: TransactionInstruction) => tx.add(ix));
@@ -120,6 +118,7 @@ export default function Permissions({ router }) {
       flashMsg("Transaction failed! The changes could not be saved :(");
       console.error(e);
     }
+    startTransition(() => setLoading(false));
   };
 
   const showRuleModal = (defaultRule: ManageRuleType) => {
@@ -129,53 +128,6 @@ export default function Permissions({ router }) {
       setModals({ ...modals, rule: true });
     });
   };
-
-  const addRuleIx = async (): Promise<TransactionInstruction> =>
-    solCerberus.program.methods
-      .addRule({
-        namespace: rule.namespace,
-        role: rule.role,
-        resource: rule.resource,
-        permission: rule.permission,
-        expiresAt: rule.expiresAt ? dateToRust(new Date(rule.expiresAt)) : null,
-      })
-      .accounts({
-        rule: await sc_rule_pda(
-          solCerberus.appId,
-          rule.role,
-          rule.resource,
-          rule.permission
-        ),
-        solCerberusApp: solCerberus.appPda,
-        solCerberusRole: null,
-        solCerberusRule: null,
-        solCerberusRule2: null,
-        solCerberusToken: null,
-        solCerberusMetadata: null,
-        solCerberusSeed: null,
-      })
-      .instruction();
-
-  const deleteRuleIx = async (): Promise<TransactionInstruction> =>
-    solCerberus.program.methods
-      .deleteRule()
-      .accounts({
-        rule: await sc_rule_pda(
-          solCerberus.appId,
-          rule.role,
-          rule.resource,
-          rule.permission
-        ),
-        collector: publicKey,
-        solCerberusApp: solCerberus.appPda,
-        solCerberusRole: null,
-        solCerberusRule: null,
-        solCerberusRule2: null,
-        solCerberusToken: null,
-        solCerberusMetadata: null,
-        solCerberusSeed: null,
-      })
-      .instruction();
 
   const addToStack = async () => {
     if (!solCerberus) return;
@@ -215,9 +167,24 @@ export default function Permissions({ router }) {
       delete txStack[ruleKey];
       // Add Instruction otherwise
     } else {
-      txStack[ruleKey] = await (rule.action === Actions.Create
-        ? addRuleIx()
-        : deleteRuleIx());
+      txStack[ruleKey] = (await (rule.action === Actions.Create
+        ? solCerberus.addRule(
+            rule.role,
+            rule.resource,
+            rule.permission,
+            rule.namespace,
+            {
+              expiresAt: rule.expiresAt ? new Date(rule.expiresAt) : null,
+              getIx: true,
+            }
+          )
+        : solCerberus.deleteRule(
+            rule.role,
+            rule.resource,
+            rule.permission,
+            rule.namespace,
+            { getIx: true }
+          ))) as TransactionInstruction;
     }
 
     let displayedRules = { ...rules };
@@ -260,7 +227,7 @@ export default function Permissions({ router }) {
       setRules(null);
       setTxStack({});
       if (solCerberus) {
-        solCerberus.destroy(); // Remove Websockets listeners
+        solCerberus.disconnect(); // Remove Websockets listeners
         setSolCerberus(null);
       }
     });
@@ -270,18 +237,12 @@ export default function Permissions({ router }) {
   useEffect(() => {
     if (!publicKey) {
       // Clear all data if user's wallet has been disconnected
-      if (solCerberus) {
-        clearStates();
-      }
-      return;
+      return clearStates();
     }
     let sc = null;
     if (solCerberus) return;
     (async () => {
-      sc = new SolCerberus(
-        new PublicKey(appId),
-        get_provider(connection, wallet)
-      );
+      sc = new SolCerberus(connection, wallet, { appId: new PublicKey(appId) });
       const allRules = await sc.fetchPerms();
       startTransition(() => {
         setLoading(false);
@@ -291,11 +252,7 @@ export default function Permissions({ router }) {
     })();
 
     // Cleanup SolCerberus
-    return () => {
-      if (sc) {
-        sc.destroy(); // Remove listeners
-      }
-    };
+    return () => clearStates(); // Remove listeners
   }, [publicKey]);
 
   return (
@@ -729,7 +686,9 @@ export default function Permissions({ router }) {
       </Modal>
       <Tooltip id="main-tooltip" />
       <AnimatePresence>
-        {!!Object.keys(txStack).length && <CTA handleSave={handleSave} />}
+        {!!Object.keys(txStack).length && !loading && (
+          <CTA handleSave={handleSave} />
+        )}
       </AnimatePresence>
     </>
   );

@@ -66,7 +66,9 @@ pub struct Add<'info> {
     ...
 }
 ```
-You also need to add the following Sol cerberus accounts into the `struct`:
+
+{: .note }
+On future versions of Anchor using  <span class="inline-block">`#[sol_cerberus_accounts]`</span> would be enough, but at the moment we also need to manually add the following accounts into the `struct` or [Anchor won't be able to generate the IDL file correctly].
 
 ```rust
     /// CHECK: Validated on CPI call
@@ -76,15 +78,13 @@ You also need to add the following Sol cerberus accounts into the `struct`:
     /// CHECK: Validated on CPI call
     pub sol_cerberus_role: Option<UncheckedAccount<'info>>,
     /// CHECK: Validated on CPI call
-    pub sol_cerberus_token_acc: Option<UncheckedAccount<'info>>,
+    pub sol_cerberus_token: Option<UncheckedAccount<'info>>,
     /// CHECK: Validated on CPI call
     pub sol_cerberus_metadata: Option<UncheckedAccount<'info>>,
     pub sol_cerberus: Program<'info, SolCerberus>,
 ```
 Check out a working example from our demo program: [Adding required Sol Cerberus accounts](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/programs/sol-cerberus-demo/src/instructions/add.rs#L17-L27)
 
-{: .note }
-On future versions of Anchor using just the <span class="inline-block">`#[sol_cerberus_accounts]`</span> annotation should be enough, but at the moment we also need to manually add these accounts or [Anchor won't be able to generate the IDL file correctly].
 
 
 ---
