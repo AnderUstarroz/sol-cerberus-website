@@ -173,6 +173,14 @@
       .newBtn {
         margin: 25px 10px 0;
       }
+      .address {
+        h5 {
+          padding: 12px 16px 16px 15%;
+          > span > span {
+            font-size: 7px;
+          }
+        }
+      }
     }
   }
   .wideModal {

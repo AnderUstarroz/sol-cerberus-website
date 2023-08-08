@@ -10,8 +10,10 @@
     transition: all 0.6s ease-in-out;
     font-size: 18px;
     background-color: #332f37;
-    padding: 10px 0;
+    padding: 0;
     a {
+      width: 100%;
+      padding: 10px 0;
       display: flex;
       gap: 10px;
       justify-content: center;

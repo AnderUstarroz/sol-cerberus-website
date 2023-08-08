@@ -5,7 +5,7 @@ parent: Javascript SDK
 nav_order: 3
 ---
 
-# Delete Sol Cerberus APP
+# Delete Sol Cerberus APP (JS SDK)
 {: .no_toc }
 
 ---
@@ -54,7 +54,7 @@ const wallet = Keypair.fromSecretKey(Uint8Array.from([174, 47, ...]));
  
 const solCerberus = new SolCerberus(connection, wallet, {appId: new PublicKey("PASTE_YOUR_SOL_CERBERUS_APP_ID_HERE")});
 // Delete existing Sol Cerberus APP on-chain:
-solCerberus.deleteApp() // Async func
+await solCerberus.deleteApp() // Async func
 ```
 
 ### With React:

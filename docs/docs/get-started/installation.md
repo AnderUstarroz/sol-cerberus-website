@@ -19,7 +19,7 @@ nav_order: 2
 
 ---
 
-Sol Cerberus integration is divided into two parts, the [Anchor packages] and the [Javascript SDK], which facilitates the interaction with the Sol Cerberus program, allowing the use of a succinct and neat syntax to perform authenticated requests.
+Sol Cerberus integration is divided into two parts, installing the [Sol Cerberus crate] into your Anchor program and the [Javascript SDK] in the frontend to facilitate the interaction with the Sol Cerberus program, allowing the use of a succinct syntax to perform authenticated requests.
 
 ## Anchor installation
 
@@ -27,9 +27,9 @@ Add the following dependencies into the `Cargo.toml` file of your Anchor program
 
 ```toml
 [dependencies]
-anchor-spl = { version = "0.27.0", features = ["metadata"] }
-sol-cerberus = { version = "0.1.5", features = ["cpi"] }
-solana-program = "1.15.2"
+anchor-spl = { version = "0.28.0", features = ["metadata"] }
+sol-cerberus = { version = "0.1.7", features = ["cpi"] }
+solana-program = "1.16.8"
 ```
 
 ## Frontend installation
@@ -41,8 +41,8 @@ To install the package add the following dependencies into the `package.json` fi
 ```json
 {
   "dependencies": {
-    "sol-cerberus-js": "latest"
-    "@metaplex-foundation/js": "^0.18.3",
+    "sol-cerberus-js": "latest",
+    "@metaplex-foundation/js": "^0.19.4" // Optional (if planning to use NFTs)
   },
 }
 ```
@@ -61,7 +61,7 @@ The `@metaplex-foundation/js` package is actually optional and only necessary if
 </div>
 </div>
 
-[Anchor packages]: https://crates.io/crates/sol-cerberus
+[Sol Cerberus crate]: https://crates.io/crates/sol-cerberus
 [Javascript SDK]: https://www.npmjs.com/package/sol-cerberus-js
 [Requirements]: ../requirements
 [Setup]: ../setup

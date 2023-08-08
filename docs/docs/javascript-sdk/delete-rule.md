@@ -5,7 +5,7 @@ parent: Javascript SDK
 nav_order: 7
 ---
 
-# Delete Rule
+# Delete Rule (JS SDK)
 {: .no_toc }
 
 ---
@@ -53,7 +53,7 @@ const wallet = Keypair.fromSecretKey(Uint8Array.from([174, 47, ...]));
  
 const solCerberus = new SolCerberus(connection, wallet, {appId: new PublicKey("PASTE_YOUR_SOL_CERBERUS_APP_ID_HERE")});
 // Delete existing rule:
-solCerberus.deleteRule("myRule", "myResource", "myPermission"); // Async func
+await solCerberus.deleteRule("myRule", "myResource", "myPermission"); // Async func
 ```
 
 ### With React:
@@ -102,7 +102,7 @@ export default function MyReactComponent({ router }) {
     return () => clearStates();
   }, [publicKey]);
 
-  // STEP 2: Refresh all assigned roles when updated
+  // STEP 2: Refresh all rules
   useEffect(() => {
     if (solCerberus) {
       (async () => {
@@ -142,7 +142,6 @@ export default function MyReactComponent({ router }) {
 [Add Rule]
 </div>
 <div markdown="1">
-[Add Rule]
 </div>
 </div>
 

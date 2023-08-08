@@ -2,6 +2,7 @@
   display: inline-block;
   & :global {
     .wallet-adapter-button {
+      font-size: 12px;
       height: unset;
       padding: 5px 20px;
       line-height: unset;

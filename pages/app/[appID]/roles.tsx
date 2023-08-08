@@ -9,7 +9,7 @@ import {
   SolCerberus,
   cacheUpdated,
   rolesGroupedBy,
-  short_key,
+  shortKey,
 } from "sol-cerberus-js";
 import {
   PublicKey,
@@ -92,7 +92,7 @@ const addRole = (result, row: RoleType): RolesType => {
   return result;
 };
 
-export default function Roles({ router }) {
+export default function Roles({ router, cluster }) {
   const { publicKey, wallet, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const [loading, setLoading] = useState<boolean>(true);
@@ -106,7 +106,7 @@ export default function Roles({ router }) {
     role: false,
   });
 
-  const [_, __, appId, section] = router.asPath.split("/");
+  const section = router.asPath.split("/").pop();
 
   const clearStates = () => {
     startTransition(() => {
@@ -158,7 +158,7 @@ export default function Roles({ router }) {
         ) {
           flashMsg(
             `The role "${role.role}" is already assigned to the address "${
-              role.address.length > 1 ? short_key(role.address) : role.address
+              role.address.length > 1 ? shortKey(role.address) : role.address
             }"`
           );
           return;
@@ -257,6 +257,7 @@ export default function Roles({ router }) {
   };
   // STEP 1: Init Sol Cerberus and roles
   useEffect(() => {
+    if (!router.isReady) return;
     if (!publicKey) {
       // Clear all data if user's wallet has been disconnected
       return clearStates();
@@ -265,9 +266,17 @@ export default function Roles({ router }) {
     if (solCerberus) return;
     (async () => {
       sc = new SolCerberus(connection, wallet, {
-        appId: new PublicKey(appId),
+        appId: new PublicKey(router.query.appID),
         permsAutoUpdate: false,
       });
+      const appData = await sc.getAppData();
+      if (!appData) {
+        return router.push(
+          `/app/?error=APP ${shortKey(
+            router.query.appID
+          )} not found on ${cluster}`
+        );
+      }
       let allRoles = sortRoles(
         await sc.fetchAllRoles({ groupBy: rolesGroupedBy.None })
       );
@@ -280,7 +289,7 @@ export default function Roles({ router }) {
 
     // Cleanup SolCerberus
     return () => clearStates();
-  }, [publicKey]);
+  }, [publicKey, router.isReady]);
 
   return (
     <>
@@ -290,8 +299,12 @@ export default function Roles({ router }) {
         <meta name="description" content="Sol Cerberus APP roles" />
       </Head>
       <div className={`page ${styles.container}`}>
-        <Breadcrumbs appId={appId} section={section} />
-        <Menu appId={appId} active={section} />
+        {!!router.query.appID && (
+          <Breadcrumbs appId={router.query.appID} section={section} />
+        )}
+        {!!router.query.appID && (
+          <Menu appId={router.query.appID} active={section} />
+        )}
         <div className="newBtn">
           <Button
             className="button4"

@@ -5,7 +5,7 @@ parent: Javascript SDK
 nav_order: 6
 ---
 
-# Add Rule
+# Add Rule (JS SDK)
 {: .no_toc }
 
 ---
@@ -28,7 +28,7 @@ The [`solCerberus.addRule()`] method provided by the [JS SDK], supports the foll
 
 ## solCerberus.addRule()
 
-- `role` string: The role getting the permission.
+- `role` string: The role getting the permission, only alphanumeric characters (a-z, A-Z,0-9) and 16 characters max.
 - `resource` string: The resource in which the permission will have effect.
 - `permission` string: The permission.
 - `options` (optional): Additional parameters to customize behavior:
@@ -58,7 +58,7 @@ const wallet = Keypair.fromSecretKey(Uint8Array.from([174, 47, ...]));
  
 const solCerberus = new SolCerberus(connection, wallet, {appId: new PublicKey("PASTE_YOUR_SOL_CERBERUS_APP_ID_HERE")});
 // Add new rule:
-solCerberus.addRule(
+await solCerberus.addRule(
   "myRole", 
   "myResource",  
   "myPermission",  
@@ -191,6 +191,9 @@ export default function MyReactComponent({ router }) {
   );
 }
 ```
+Check out a real world example from our [demo program](https://demo.solcerberus.com/):
+
+- [Adding "Add", "Update" and "Delete" permissions to "SquareMaster" role](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/2_square.ts#L71-L73).
 
 ---
 

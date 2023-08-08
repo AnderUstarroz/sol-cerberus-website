@@ -36,7 +36,7 @@ Sol Cerberus includes built-in authentication for added convenience:
 ## How does it work?
 Sol Cerberus provides [Rust] and [NPM] packages to easily integrate a powerful [RBAC] system into your [Solana Anchor programs] and frontends. 
 
-Let's take a quick look at our [Anchor demo program], just by using the `#[rule(Square, Add)]` annotation, we can restrict the execution of the `add_square()` instruction only to users whose assigned role has the `Add` permission on the `Square` resource:
+Let's take a quick look at our [Anchor demo program] (which can be seen in action on the [Demo] site), just by using the `#[rule(Square, Add)]` annotation, we can restrict the execution of the `add_square()` instruction only to users whose assigned role has the `Add` permission on the `Square` resource:
 
 ```rust
 #[program]
@@ -69,5 +69,6 @@ This is just a simple example. Developers can define any `role`, `resource` and 
 [Rust]: https://crates.io/crates/sol-cerberus
 [NPM]: https://www.npmjs.com/package/sol-cerberus-js
 [Solana Anchor programs]: https://book.anchor-lang.com/introduction/what_is_anchor.html
-[Anchor demo program]: https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/programs/sol-cerberus-demo/src/lib.rs#L26-L29
+[Anchor demo program]: https://github.com/AnderUstarroz/sol-cerberus-demo
+[Demo]: https://demo.solcerberus.com/
 [Get started]: docs/get-started

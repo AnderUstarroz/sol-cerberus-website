@@ -5,7 +5,7 @@ parent: Javascript SDK
 nav_order: 4
 ---
 
-# Assign Role
+# Assign Role (JS SDK)
 {: .no_toc }
 
 ---
@@ -18,17 +18,11 @@ nav_order: 4
 {:toc}
 
 ---
-
-Roles can be assigned to: 
-- **Wallets**
--  **NFTs** 
--  **NFT Collections**
-
 The [`solCerberus.assignRole()`] method provided by the [JS SDK], supports the following params:
 
 ## solCerberus.assignRole()
 
-- `role` string: The name of the role to assign.
+- `role` string: The name of the role to assign, only alphanumeric characters (a-z, A-Z,0-9) and 16 characters max.
 - `addressType` string: Either `'wallet'`, `'nft'` or `'collection'`.
 - `address` PublicKey: The Solana address (or wildcard `'*'`) to which the role is assigned. A wilcard `"*"` means that role will be applied to everyone.
 - `options` (optional): Additional parameters to customize behavior:
@@ -47,7 +41,7 @@ Minimum example using plain Javascript:
 
 ```js
 import { Keypair, PublicKey, Connection, clusterApiUrl} from "@solana/web3.js";
-import { solCerberus, getProvider } from "sol-cerberus-js";
+import { solCerberus, getProvider, addressTypes } from "sol-cerberus-js";
 import * as anchor from "@project-serum/anchor";
 
 /** Create a connection. **/
@@ -56,15 +50,15 @@ const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
 const wallet = Keypair.fromSecretKey(Uint8Array.from([174, 47, ...]));
  
 const solCerberus = new SolCerberus(connection, wallet, {appId: new PublicKey("PASTE_YOUR_SOL_CERBERUS_APP_ID_HERE")});
-// Assign role to address:
-solCerberus.assignRole(
+// Assign role to address
+await solCerberus.assignRole(
   "myRole", 
-  "wallet",  
+  addressTypes.Wallet, // Use addressTypes.Nft to assign role to a specific NFT or addressTypes.Collection for the whole collection.
   new PublicKey("THE_WALLET_ADDRESS_GETTING_THE_ROLE"), 
   {
     expiresAt: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1) // The assigned Role will expire in 24h
   } 
-  )  // Async func
+)  // Async func
 ```
 
 ### With React:
@@ -73,7 +67,7 @@ Small example using React:
 ```tsx
 import React, { startTransition, useEffect, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { RoleType, SolCerberus } from "sol-cerberus-js";
+import { RoleType, SolCerberus, addressTypes } from "sol-cerberus-js";
 import { PublicKey } from "@solana/web3.js";
 
 export default function MyReactComponent({ router }) {
@@ -82,7 +76,7 @@ export default function MyReactComponent({ router }) {
   const { publicKey, wallet } = useWallet();
   const [role, setRole] = useState({
     role: "",
-    addressType: "wallet",
+    addressType: addressTypes.Wallet, // Use addressTypes.Nft to assign role to a specific NFT or addressTypes.Collection for the whole collection. 
     expiresAt: null,
   } as any);
   const [success, setSuccess] = useState(false);
@@ -193,6 +187,12 @@ export default function MyReactComponent({ router }) {
 }
 ```
 
+Check out a real world examples from our [demo program]:
+
+- [Assigning role to specific wallet].
+- [Assigning role to specific NFT].
+- [Assigning role to an entire NFT collection].
+
 ---
 
 <div class="prev-next">
@@ -206,5 +206,9 @@ export default function MyReactComponent({ router }) {
 
 [`solCerberus.assignRole()`]: https://js-sdk.solcerberus.com/classes/SolCerberus.html#assignRole
 [JS SDK]: https://www.npmjs.com/package/sol-cerberus-js
+[demo program]: https://demo.solcerberus.com/
+[Assigning role to specific wallet]: https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/2_square.ts#L23-L27
+[Assigning role to specific NFT]: https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/3_circle.ts#L36-L39
+[Assigning role to an entire NFT collection]: https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/4_triangle.ts#L47-L51
 [Delete Sol Cerberus APP]: ../delete-sol-cerberus-app
 [Delete Assigned Role]: ../delete-assigned-role

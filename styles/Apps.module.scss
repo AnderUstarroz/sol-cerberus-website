@@ -55,3 +55,18 @@
   display: flex;
   align-items: center;
 }
+
+@media (max-width: 1023px) {
+  .container {
+    & :global {
+      .apps {
+        ul {
+          li {
+            flex-basis: unset;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}

@@ -5,7 +5,7 @@ import styles from "../../styles/Apps.module.scss";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { DEFAULT_ANIMATION } from "../../components/utils/animation";
-import { SolCerberus, SolCerberusTypes, short_key } from "sol-cerberus-js";
+import { SolCerberus, SolCerberusTypes, shortKey } from "sol-cerberus-js";
 import * as anchor from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { Tooltip } from "react-tooltip";
@@ -13,6 +13,7 @@ import { AppError, validateInput } from "../../components/validation/app";
 import { flashMsg } from "../../components/utils/helpers";
 import { NewAPPType, NewAPPErrorType } from "../../types/app";
 import Link from "next/link";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 
 const ConnectWallet = dynamic(() => import("../../components/connect-wallet"));
 const Spinner = dynamic(() => import("../../components/spinner"));
@@ -21,7 +22,7 @@ const Modal = dynamic(() => import("../../components/modal"));
 const Icon = dynamic(() => import("../../components/icon"));
 const Input = dynamic(() => import("../../components/input"));
 
-export default function Apps({ router }) {
+export default function Apps({ router, cluster }) {
   const { publicKey, wallet } = useWallet();
   const { connection } = useConnection();
   const [loading, setLoading] = useState<boolean>(true);
@@ -109,14 +110,29 @@ export default function Apps({ router }) {
 
   // STEP 1: Init
   useEffect(() => {
+    if (!router.isReady) return;
+    // Show URL error message (if any)
+    if (router.query.error) {
+      flashMsg(router.query.error, "error", 10000);
+      router.push(router.route, undefined, {
+        shallow: true,
+      });
+    }
     if (!publicKey) {
       // Clear all data when user's wallet has been disconnected
       return clearStates();
     }
     if (solCerberus) return;
+    if (cluster === WalletAdapterNetwork.Mainnet) {
+      flashMsg(
+        "Sol Cerberus is only available on Devnet and Testnet (Mainnet will be available when Solana v1.16 is deployed)",
+        "error",
+        10000
+      );
+    }
     setSolCerberus(new SolCerberus(connection, wallet));
     return () => clearStates();
-  }, [publicKey]);
+  }, [publicKey, router.isReady]);
 
   // STEP 2: load APPs
   useEffect(() => {
@@ -141,11 +157,11 @@ export default function Apps({ router }) {
   return (
     <>
       <Head>
-        <title>Sol Cerberus Dashboard</title>
+        <title>Sol Cerberus Manager</title>
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
-          content="Sol Cerberus dashboard for managing the permissions of your Solana DAPPs"
+          content="Sol Cerberus tool for managing roles and permissions in your Solana programs"
         />
       </Head>
       {!publicKey ? (
@@ -166,10 +182,10 @@ export default function Apps({ router }) {
               className={`page ${styles.container}`}
               {...DEFAULT_ANIMATION}
             >
-              <h1>Sol Cerberus APPs</h1>
+              <h1>SC Manager</h1>
               <p className="txtCenter">
-                The APPs contain the permissions and roles associated to your
-                Solana programs.
+                List of APPs containing the permissions and roles associated to
+                your Solana programs.
               </p>
               <section className="apps">
                 {!!apps.length && (
@@ -194,12 +210,12 @@ export default function Apps({ router }) {
                                 flashMsg("APP ID copied", "info", 2000);
                               }}
                             >
-                              {short_key(app.id.toBase58())}
+                              {shortKey(app.id.toBase58())}
                             </div>
                             <div>{app.cached ? "Yes" : "No"}</div>
                             <div>
                               {app.recovery
-                                ? short_key(app.recovery)
+                                ? shortKey(app.recovery)
                                 : "Not defined"}
                             </div>
                           </div>

@@ -1,6 +1,6 @@
 import { addressTypes } from "sol-cerberus-js";
 import { RoleError } from "../../types/roles";
-import { is_ascii_alphanumeric } from "../utils/string";
+import { is_ascii_alphanumeric } from "../utils/strings";
 import { PublicKey } from "@metaplex-foundation/js";
 
 export function isAsciiAlphanumeric(field: string, value: string) {

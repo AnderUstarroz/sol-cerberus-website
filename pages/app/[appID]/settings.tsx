@@ -8,7 +8,7 @@ import {
   SolCerberus,
   SolCerberusTypes,
   rolesGroupedBy,
-  short_key,
+  shortKey,
 } from "sol-cerberus-js";
 import * as anchor from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
@@ -30,7 +30,7 @@ const Breadcrumbs = dynamic(
   () => import("../../../components/app/breadcrumbs")
 );
 
-export default function Settings({ router }) {
+export default function Settings({ cluster, router }) {
   const { publicKey, wallet } = useWallet();
   const { connection } = useConnection();
   const [loading, setLoading] = useState<boolean>(true);
@@ -45,8 +45,7 @@ export default function Settings({ router }) {
     delete: false,
   });
 
-  const [_, __, appId, section] = router.asPath.split("/");
-
+  const section = router.asPath.split("/").pop();
   const validateField = (key: string, value: any): boolean => {
     try {
       validateInput(key, value);
@@ -155,6 +154,7 @@ export default function Settings({ router }) {
 
   // STEP 1: Init Sol Cerberus and permissions
   useEffect(() => {
+    if (!router.isReady) return;
     if (!publicKey) {
       // Clear all data if user's wallet has been disconnected
       return clearStates();
@@ -162,8 +162,17 @@ export default function Settings({ router }) {
     let sc = null;
     if (solCerberus) return;
     (async () => {
-      sc = new SolCerberus(connection, wallet, { appId: new PublicKey(appId) });
+      sc = new SolCerberus(connection, wallet, {
+        appId: new PublicKey(router.query.appID),
+      });
       const appData = await sc.getAppData();
+      if (!appData) {
+        return router.push(
+          `/app/?error=APP ${shortKey(
+            router.query.appID
+          )} not found on ${cluster}`
+        );
+      }
       startTransition(() => {
         setLoading(false);
         setSolCerberus(sc);
@@ -174,7 +183,7 @@ export default function Settings({ router }) {
 
     // Cleanup SolCerberus
     return () => clearStates();
-  }, [publicKey]);
+  }, [publicKey, router.isReady]);
 
   return (
     <>
@@ -184,14 +193,17 @@ export default function Settings({ router }) {
         <meta name="description" content={`Sol Cerberus APP ${section}`} />
       </Head>
       <div className={`page ${styles.container}`}>
-        <Breadcrumbs appId={appId} section={section} />
-        <Menu appId={appId} active={section} />
+        {!!router.query.appID && (
+          <Breadcrumbs appId={router.query.appID} section={section} />
+        )}
+        {!!router.query.appID && (
+          <Menu appId={router.query.appID} active={section} />
+        )}
         <section>
           <fieldset>
             <AnimatePresence>
-              {loading ? (
-                <Spinner />
-              ) : (
+              {loading && <Spinner />}
+              {!loading && !!app && (
                 <motion.div key="form" {...DEFAULT_ANIMATION}>
                   <h3 className="aligned">
                     APP ID:{" "}
@@ -204,7 +216,7 @@ export default function Settings({ router }) {
                         flashMsg("APP ID copied", "info", 2000);
                       }}
                     >
-                      <Icon cType="address" /> {short_key(app.id.toBase58())}
+                      <Icon cType="address" /> {shortKey(app.id.toBase58())}
                     </Button>
                   </h3>
                   <div className="aligned">

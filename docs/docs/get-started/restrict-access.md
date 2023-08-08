@@ -32,7 +32,7 @@ Restricting access to Anchor instructions is a two steps process:
 
 Simply add the <span class="inline-block">`#[rule(RESOURCE, PERMISSION)]`</span> annotation on top of the Anchor function that you want to limit access to, replacing `RESOURCE` and `PERMISSION` by your own ones. 
 
-For instance we used `#[rule(Square, Add)]` in our [demo program]:
+For instance we used [`#[rule(Square, Add)]`](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/programs/sol-cerberus-demo/src/lib.rs#L32) in our [demo program]:
 
 ```rust
 use sol_cerberus_macros::rule;
@@ -49,12 +49,11 @@ pub mod sol_cerberus_demo {
 
 }
 ```
-Check out a working example from our demo program: [Annotate Anchor instruction](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/programs/sol-cerberus-demo/src/lib.rs#L26-L29)
 
 ### Add required Sol Cerberus accounts
 Now we need to add the Sol Cerberus accounts required for authentication. Apply the <span class="inline-block">`#[sol_cerberus_accounts]`</span> annotation to the corresponding instruction's Accounts struct. 
 
-Using our [demo program] as example:
+Check out [a real world example](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/programs/sol-cerberus-demo/src/instructions/add.rs#L17-L30) from our [demo program](https://demo.solcerberus.com/): 
 
 ```rust
 #[program]
@@ -63,14 +62,8 @@ use sol_cerberus_macros::sol_cerberus_accounts;
 #[sol_cerberus_accounts]
 #[derive(Accounts)]
 pub struct Add<'info> {
-    ...
-}
-```
+    ... /// Your accounts..
 
-{: .note }
-On future versions of Anchor using  <span class="inline-block">`#[sol_cerberus_accounts]`</span> would be enough, but at the moment we also need to manually add the following accounts into the `struct` or [Anchor won't be able to generate the IDL file correctly].
-
-```rust
     /// CHECK: Validated on CPI call
     pub sol_cerberus_app: UncheckedAccount<'info>,
     /// CHECK: Validated on CPI call
@@ -81,10 +74,15 @@ On future versions of Anchor using  <span class="inline-block">`#[sol_cerberus_a
     pub sol_cerberus_token: Option<UncheckedAccount<'info>>,
     /// CHECK: Validated on CPI call
     pub sol_cerberus_metadata: Option<UncheckedAccount<'info>>,
+    #[account(mut)]
+    pub sol_cerberus_seed: Option<UncheckedAccount<'info>>,
     pub sol_cerberus: Program<'info, SolCerberus>,
+    pub system_program: Program<'info, System>,
+}
 ```
-Check out a working example from our demo program: [Adding required Sol Cerberus accounts](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/programs/sol-cerberus-demo/src/instructions/add.rs#L17-L27)
 
+{: .note }
+On future versions of Anchor using  <span class="inline-block">`#[sol_cerberus_accounts]`</span> would be enough, but at the moment we also need to manually add the following accounts into the `struct` or [Anchor won't be able to generate the IDL file correctly].
 
 
 ---

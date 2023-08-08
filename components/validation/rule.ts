@@ -1,5 +1,5 @@
 import { RuleError } from "../../types/permissions";
-import { is_ascii_alphanumeric } from "../utils/string";
+import { is_ascii_alphanumeric } from "../utils/strings";
 
 export function isAsciiAlphanumeric(field: string, value: string) {
   if (!is_ascii_alphanumeric(value)) {

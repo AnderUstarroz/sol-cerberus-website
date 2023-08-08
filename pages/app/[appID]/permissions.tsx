@@ -1,5 +1,4 @@
 import Head from "next/head";
-// import { ReactNode, useState } from "react";
 import styles from "../../../styles/Permissions.module.scss";
 import dynamic from "next/dynamic";
 import { startTransition, useEffect, useState } from "react";
@@ -9,6 +8,7 @@ import {
   SolCerberus,
   cacheUpdated,
   namespaces,
+  shortKey,
 } from "sol-cerberus-js";
 import {
   PublicKey,
@@ -54,7 +54,7 @@ const empty_rule = (): ManageRuleType => ({
   readOnlyPermission: false,
 });
 
-export default function Permissions({ router }) {
+export default function Permissions({ router, cluster }) {
   const { publicKey, wallet, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const [loading, setLoading] = useState<boolean>(true);
@@ -68,7 +68,7 @@ export default function Permissions({ router }) {
     rule: false,
   });
 
-  const [_, __, appId, section] = router.asPath.split("/");
+  const section = router.asPath.split("/").pop();
 
   const validateField = (key: string, value: any): boolean => {
     try {
@@ -168,23 +168,15 @@ export default function Permissions({ router }) {
       // Add Instruction otherwise
     } else {
       txStack[ruleKey] = (await (rule.action === Actions.Create
-        ? solCerberus.addRule(
-            rule.role,
-            rule.resource,
-            rule.permission,
-            rule.namespace,
-            {
-              expiresAt: rule.expiresAt ? new Date(rule.expiresAt) : null,
-              getIx: true,
-            }
-          )
-        : solCerberus.deleteRule(
-            rule.role,
-            rule.resource,
-            rule.permission,
-            rule.namespace,
-            { getIx: true }
-          ))) as TransactionInstruction;
+        ? solCerberus.addRule(rule.role, rule.resource, rule.permission, {
+            namespace: rule.namespace,
+            expiresAt: rule.expiresAt ? new Date(rule.expiresAt) : null,
+            getIx: true,
+          })
+        : solCerberus.deleteRule(rule.role, rule.resource, rule.permission, {
+            namespace: rule.namespace,
+            getIx: true,
+          }))) as TransactionInstruction;
     }
 
     let displayedRules = { ...rules };
@@ -235,6 +227,7 @@ export default function Permissions({ router }) {
 
   // STEP 1: Init Sol Cerberus and permissions
   useEffect(() => {
+    if (!router.isReady) return;
     if (!publicKey) {
       // Clear all data if user's wallet has been disconnected
       return clearStates();
@@ -242,7 +235,17 @@ export default function Permissions({ router }) {
     let sc = null;
     if (solCerberus) return;
     (async () => {
-      sc = new SolCerberus(connection, wallet, { appId: new PublicKey(appId) });
+      sc = new SolCerberus(connection, wallet, {
+        appId: new PublicKey(router.query.appID),
+      });
+      const appData = await sc.getAppData();
+      if (!appData) {
+        return router.push(
+          `/app/?error=APP ${shortKey(
+            router.query.appID
+          )} not found on ${cluster}`
+        );
+      }
       const allRules = await sc.fetchPerms();
       startTransition(() => {
         setLoading(false);
@@ -253,7 +256,7 @@ export default function Permissions({ router }) {
 
     // Cleanup SolCerberus
     return () => clearStates(); // Remove listeners
-  }, [publicKey]);
+  }, [publicKey, router.isReady]);
 
   return (
     <>
@@ -263,8 +266,12 @@ export default function Permissions({ router }) {
         <meta name="description" content={`Sol Cerberus APP ${section}`} />
       </Head>
       <div className={`page ${styles.container}`}>
-        <Breadcrumbs appId={appId} section={section} />
-        <Menu appId={appId} active={section} />
+        {!!router.query.appID && (
+          <Breadcrumbs appId={router.query.appID} section={section} />
+        )}
+        {!!router.query.appID && (
+          <Menu appId={router.query.appID} active={section} />
+        )}
         <div className="newBtn">
           <Button
             className="button4"

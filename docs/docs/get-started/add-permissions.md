@@ -23,6 +23,13 @@ nav_order: 5
 
 - `Role` -> `Resource` -> `Permission`
 
+## How to add permissions
+
+There are two ways to add permissions:
+
+- [Add permission using the SC manager] (recommended)
+- [Add permission using the JS SDK]
+
 ## Demo program example
 
 `Rules` are easier to understand using our [demo program] as an example.
@@ -33,13 +40,13 @@ We created 3 roles:
 - `CircleMaster`
 - `TriangleMaster`
 
-We created 3 resources:
+3 resources:
 
 - `Square`
 - `Circle`
 - `Triangle`
 
-We gave `Add`, `Update` and `Delete` permissions to each of the roles but only for their corresponding resource:
+And the `Add`, `Update` and `Delete` permissions for each role's corresponding resource:
 
 | Role | Resource | Permission |
 |:-----|:--------|:--------|
@@ -53,48 +60,14 @@ We gave `Add`, `Update` and `Delete` permissions to each of the roles but only f
 | `TriangleMaster` | `Triangle` | `Edit` |
 | `TriangleMaster` | `Triangle` | `Delete` |
 
+## Temporary Permissions
+Sol Cerberus supports temporary permissions. Adding an expiring date when adding permissions will make the permissions effective only until the provided date.
+
 ## Wildcards
-`Resource` and `Permission` can be replaced by the wildcard character `*` to represent all resources or all permissions respectively. For instance:
+`Resource` and `Permission` can be replaced by the wildcard character `*` to represent all resources or permissions, for instance:
 
-- `SquareMaster` -> `Square` -> `*` (all permission on resource `Square` for `SquareMaster`)
-- `SquareMaster` -> `*` -> `*` (all permission on all resources for `SquareMaster`)
-
-## Add permission
-
- Permissions can be added using the `addRule()` instruction provided by the [JS SDK]: 
-
-```js
-import { sc_rule_pda, SolCerberus, namespaces } from "sol-cerberus-js";
-
-// Replace the following line using your own APP ID:
-const scAppId = new PublicKey("CZE2m73MW8V3APLEs6fhiYxWqxSGJibdxFGdTAzsBj2m");
-
-const solCerberus = new SolCerberus(scAppId, provider);
-const role = "SquareMaster";
-const resource = "Square";
-const permission = "Add";
-
-await solCerberus.program.methods
-  .addRule({
-    namespace: namespaces.Rule,
-    role: role,
-    resource: resource,
-    permission: permission,
-    expiresAt: null,
-  })
-  .accounts({
-    rule: await sc_rule_pda(scAppId, role, resource, permission)
-    solCerberusApp: await solCerberus.getAppPda(),
-    solCerberusRole: null,
-    solCerberusRule: null,
-    solCerberusRule2: null,
-    solCerberusToken: null,
-    solCerberusMetadata: null,
-    solCerberusSeed: null,
-  })
-  .rpc();
-```
-Check out a working example from our demo program: [Add permission](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/2_square.ts#L93-L106).
+- `SquareMaster` -> `Square` -> `*` (all permission on resource `Square` for the `SquareMaster` role)
+- `SquareMaster` -> `*` -> `*` (all permission on all resources for the `SquareMaster` role)
 
 ---
 
@@ -107,7 +80,8 @@ Check out a working example from our demo program: [Add permission](https://gith
 </div>
 </div>
 
-[JS SDK]: https://www.npmjs.com/package/sol-cerberus-js
+[Add permission using the SC manager]: /docs/sc-manager/add-rule
+[Add permission using the JS SDK]: /docs/javascript-sdk/add-rule
 [demo program]: https://demo.solcerberus.com/
 [Assign roles]: ../assign-roles
 [Restrict access]: ../restrict-access

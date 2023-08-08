@@ -1,7 +1,7 @@
 import Link from "next/link";
 import styles from "./breadcrumbs.module.scss";
 import dynamic from "next/dynamic";
-import { short_key } from "sol-cerberus-js";
+import { shortKey } from "sol-cerberus-js";
 import { BreadcrumbsPropsType } from "./types";
 import { flashMsg } from "../../utils/helpers";
 
@@ -22,7 +22,7 @@ export default function Breadcrumbs({ appId, section }: BreadcrumbsPropsType) {
           flashMsg("APP ID copied!", "info", 2000);
         }}
       >
-        {short_key(appId)}
+        {shortKey(appId)}
       </Button>
       <Icon cType="chevron" direction="right" /> <Button>{section}</Button>
     </div>

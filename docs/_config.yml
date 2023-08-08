@@ -96,6 +96,8 @@ heading_anchors: true
 
 # Aux links for the upper right navigation
 aux_links:
+  "SC Manager":
+    - "https://solcerberus.com/app"
   "Docs":
     - "/"
   "Demo":
@@ -141,8 +143,6 @@ color_scheme: dark
 
 callouts_level: quiet # or loud
 callouts:
-  highlight:
-    color: yellow-300
   important:
     title: Important
     color: blue-100
@@ -154,6 +154,9 @@ callouts:
     color: green-200
   warning:
     title: Warning
+    color: yellow-300
+  caution:
+    title: Caution
     color: red-300
 
 # Google Analytics Tracking (optional)

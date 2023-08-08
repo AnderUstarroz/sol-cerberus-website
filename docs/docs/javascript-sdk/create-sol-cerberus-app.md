@@ -5,7 +5,7 @@ parent: Javascript SDK
 nav_order: 1
 ---
 
-# Create Sol Cerberus APP
+# Create Sol Cerberus APP (JS SDK)
 {: .no_toc }
 
 ---
@@ -68,7 +68,7 @@ const wallet = Keypair.generate() // Using a random private key
 
 const solCerberus = new SolCerberus(connection, wallet);
 // Create Sol Cerberus APP on-chain:
-solCerberus.initializeApp("myApp", null)  // Async func
+await solCerberus.initializeApp("myApp", null, {cached: false})  // Async func
 console.log(`My APP ID is: ${solCerberus.appId.toBase58()}`)
 ```
 
@@ -145,7 +145,7 @@ export default function MyReactComponent({ router }) {
 }
 ```
 
-Check out a working example from our demo program: [Create APP](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/1_initialize_demo.ts#L23-L32).
+Check out a working example from our demo program: [Create APP](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/1_initialize_demo.ts#L48-L50).
 
 
 {: .note }
@@ -166,5 +166,5 @@ Remember to write down your **APP ID** after creating a Sol Cerberus APP, you wi
 [JS SDK]: https://www.npmjs.com/package/sol-cerberus-js
 [web3.js package]: https://solana-labs.github.io/solana-web3.js/
 [Sol Cerberus Manager]: https://solcerberus.com/app
-[Javascript SDK]: ../
+[Javascript SDK]: /docs/javascript-sdk
 [Update Sol Cerberus APP]: ../update-sol-cerberus-app

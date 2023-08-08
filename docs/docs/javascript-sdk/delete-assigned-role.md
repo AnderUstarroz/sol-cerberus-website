@@ -5,7 +5,7 @@ parent: Javascript SDK
 nav_order: 5
 ---
 
-# Delete Assigned Role
+# Delete Assigned Role (JS SDK)
 {: .no_toc }
 
 ---
@@ -52,7 +52,7 @@ const wallet = Keypair.fromSecretKey(Uint8Array.from([174, 47, ...]));
  
 const solCerberus = new SolCerberus(connection, wallet, {appId: new PublicKey("PASTE_YOUR_SOL_CERBERUS_APP_ID_HERE")});
 // Delete existing assigned role:
-solCerberus.deleteAssignedRole(
+await solCerberus.deleteAssignedRole(
   "myRole", 
   "wallet",  
   new PublicKey("THE_WALLET_ADDRESS_WHO_HAD_THE_ROLE"), 
@@ -115,7 +115,7 @@ export default function MyReactComponent({ router }) {
   }, [updated]);
 
   return (
-    <div style={{ marginTop: 110 }}>
+    <div>
       {!!roles &&
         Object.entries(roles).map(([address, role]) =>
           Object.entries(role).map(([role, values]) => (
@@ -140,7 +140,7 @@ export default function MyReactComponent({ router }) {
 
 <div class="prev-next">
 <div markdown="1">
-[Delete Sol Cerberus APP]
+[Assign Role]
 </div>
 <div markdown="1">
 [Add Rule]
@@ -149,5 +149,5 @@ export default function MyReactComponent({ router }) {
 
 [`solCerberus.deleteAssignedRole()`]: https://js-sdk.solcerberus.com/classes/SolCerberus.html#deleteAssignedRole
 [JS SDK]: https://www.npmjs.com/package/sol-cerberus-js
-[Delete Sol Cerberus APP]: ../delete-sol-cerberus-app
+[Assign Role]: ../assign-role
 [Add Rule]: ../add-rule

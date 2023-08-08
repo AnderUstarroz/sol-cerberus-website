@@ -5,7 +5,7 @@ parent: Javascript SDK
 nav_order: 2
 ---
 
-# Update Sol Cerberus APP
+# Update Sol Cerberus APP (JS SDK)
 {: .no_toc }
 
 ---
@@ -52,7 +52,7 @@ const wallet = Keypair.fromSecretKey(Uint8Array.from([174, 47, ...]));
  
 const solCerberus = new SolCerberus(connection, wallet, {appId: new PublicKey("PASTE_YOUR_SOL_CERBERUS_APP_ID_HERE")});
 // Update existing Sol Cerberus APP on-chain:
-solCerberus.updateApp("myNewName", null) // Async func
+await solCerberus.updateApp("myNewName", null) // Async func
 ```
 
 ### With React:
