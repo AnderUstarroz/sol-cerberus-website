@@ -18,30 +18,21 @@ nav_order: 1
 {:toc}
 
 ---
-Some introduction text
+The core of SolCerberus is the APP, which manages roles and permissions and enforces the 
+access rules for a Solana program.
 
-## some title
-
-Some description text
-
-### some subtitle:
-Some description text
-
-- some list item 1
-- some list item 2
+1. Go to the SC manager: https://solcerberus.com/app
+2. Click Create New App
+3. Select a name for the app 
+4. Optional: Enter the address for a recovery wallet
+5. Click Accept and sign the transaction
 
 {: .important }
-some important thing.
+We strongly recommend entering a recovery wallet that is independent of the main wallet.
 
-{: .note }
-Some note
-
-{: .warning }
-Some warning
-
-{: .caution }
-Some caution message
-
+{: .note}
+If you're using SolCerberus as part of another application, the SolCerberus app might be created 
+for you automatically through that application.
 
 ---
 

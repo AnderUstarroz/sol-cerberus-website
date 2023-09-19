@@ -19,30 +19,24 @@ nav_order: 2
 {:toc}
 
 ---
-Some introduction text
+By connecting a wallet to the SC Manager, you can see all SolCerberus apps connected to that wallet. 
+Click manage on an app in order to update any settings. 
 
-## some title
+## Caching
+By default, the SC Manager will cache permissions and rules on the client side to make the manager interface faster to load and use. The setting can be turned off here if necessary.
 
-Some description text
-
-### some subtitle:
-Some description text
-
-- some list item 1
-- some list item 2
-
-{: .important }
-some important thing.
-
-{: .note }
-Some note
-
-{: .warning }
-Some warning
+## Transfering ownership
+If you want to transfer the ownership of the account managed by the Sol Cerberus app, update the authority
+under settings. 
 
 {: .caution }
-Some caution message
+Changing the authority will immediately transfer the ownership of the app. Setting the wrong key here will
+result in permanent loss of access. We suggest always having a recovery address, transfer the authority 
+first, validate that the transfer is correct and then change the recovery. 
 
+{: .note }
+Transfering the authority is a nice way to move control from one of your wallets to another.
+ 
 
 ---
 

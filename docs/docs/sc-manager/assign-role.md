@@ -17,29 +17,19 @@ nav_order: 4
 {:toc}
 
 ---
-Some introduction text
+In order to control access to an app, at least one Role is necessary. Roles are simply text strings 
+(names). The role is assigned to a Wallet, the owner of a specific NFT, or all owners of NFTs belonging
+to a collection. 
 
-## some title
+## Assign role
+Click Assign Role, pick a name, type of address and enter the address. 
 
-Some description text
-
-### some subtitle:
-Some description text
-
-- some list item 1
-- some list item 2
-
-{: .important }
-some important thing.
+Role assignments can be temporary, click the checkbox and set an UTC time at which the role assignment 
+will expire. 
 
 {: .note }
-Some note
-
-{: .warning }
-Some warning
-
-{: .caution }
-Some caution message
+You can assign the same role to several wallets/NFTs/Collections, or any mix thereof. Click Add, next to 
+the role name, or use Assign and enter the same role name again.
 
 
 ---

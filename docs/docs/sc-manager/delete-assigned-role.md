@@ -20,30 +20,12 @@ nav_order: 5
 {:toc}
 
 ---
-Some introduction text
-
-## some title
-
-Some description text
-
-### some subtitle:
-Some description text
-
-- some list item 1
-- some list item 2
-
-{: .important }
-some important thing.
+## Remove access
+To remove a role from an address, expand the role and remove the appropriate row.
 
 {: .note }
-Some note
-
-{: .warning }
-Some warning
-
-{: .caution }
-Some caution message
-
+The interface will still show role assignments that have expired since the data remains on the blockchain.
+They can safely be deleted.
 
 ---
 <div class="prev-next">

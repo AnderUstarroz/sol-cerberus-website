@@ -18,29 +18,11 @@ nav_order: 3
 {:toc}
 
 ---
-Some introduction text
-
-## some title
-
-Some description text
-
-### some subtitle:
-Some description text
-
-- some list item 1
-- some list item 2
-
-{: .important }
-some important thing.
-
-{: .note }
-Some note
-
-{: .warning }
-Some warning
+Under Settings, there is the option to delete an app.
 
 {: .caution }
-Some caution message
+Deleting an SolCerberus app will likely lead to loss of access to the resource(s) managed by that app. 
+Make sure to withdraw any assets from the program that the app controls access to first.
 
 
 ---

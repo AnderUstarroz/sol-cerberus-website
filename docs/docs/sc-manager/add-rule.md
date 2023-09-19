@@ -18,31 +18,19 @@ nav_order: 6
 {:toc}
 
 ---
+Permission Rules are the link that defines what the holder of a specific role can do.
 
-Some introduction text
+## Resources and Permissions
+The permission defines which action can be performed on which resource by which role. Sol Cerberus allows defining any combination of roles, resources and permissions, allowing fine-grained access management. 
 
-## some title
-
-Some description text
-
-### some subtitle:
-Some description text
-
-- some list item 1
-- some list item 2
-
-{: .important }
-some important thing.
+Permissions can be added as temporary by clicking the checkbox when creating them.
 
 {: .note }
-Some note
+Example. Allow guests to open the door, assign a permission rule as... 
+Role: Guest, Resource: Door, Permission: Open
 
-{: .warning }
-Some warning
-
-{: .caution }
-Some caution message
-
+{: .note }
+Using the Add buttons next to roles or resources helps quickly adding multiple similar rules.
 
 ---
 
