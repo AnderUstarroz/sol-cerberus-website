@@ -71,7 +71,7 @@ export default function Apps({ router, cluster }) {
       await solCerberus.program.account.app.all([
         {
           memcmp: {
-            offset: 40, // Authority Starting byte (First bytes 0-7: account discriminator, bytes 8-39 = APP ID)
+            offset: 40, // Authority Starting byte (First bytes 0-7: account discriminator, bytes 8-39 = app ID)
             bytes: pubkey.toBase58(), // base58 encoded string
           },
         },
@@ -134,7 +134,7 @@ export default function Apps({ router, cluster }) {
     return () => clearStates();
   }, [publicKey, router.isReady]);
 
-  // STEP 2: load APPs
+  // STEP 2: load apps
   useEffect(() => {
     if (!solCerberus) return;
     loadApps(publicKey);
@@ -184,7 +184,7 @@ export default function Apps({ router, cluster }) {
             >
               <h1>SC Manager</h1>
               <p className="txtCenter">
-                List of APPs containing the permissions and roles associated to
+                List of apps containing the permissions and roles associated to
                 your Solana programs.
               </p>
               <section className="apps">
@@ -202,7 +202,7 @@ export default function Apps({ router, cluster }) {
                           <div>
                             <div
                               className="copy"
-                              title="Copy APP ID"
+                              title="Copy app ID"
                               onClick={() => {
                                 navigator.clipboard.writeText(
                                   app.id.toBase58()

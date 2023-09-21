@@ -16,7 +16,7 @@ export default function Breadcrumbs({ appId, section }: BreadcrumbsPropsType) {
       </Button>
       <Icon cType="chevron" direction="right" />{" "}
       <Button
-        title="Copy APP ID"
+        title="Copy app ID"
         onClick={() => {
           navigator.clipboard.writeText(appId);
           flashMsg("APP ID copied!", "info", 2000);

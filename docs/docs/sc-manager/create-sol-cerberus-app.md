@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Create Sol Cerberus APP
+title: Create Sol Cerberus app
 parent: SC Manager
 nav_order: 1
 ---
 
-# Create Sol Cerberus APP (SC Manager)
+# Create Sol Cerberus app (SC Manager)
 {: .no_toc }
 
 ---
@@ -18,12 +18,12 @@ nav_order: 1
 {:toc}
 
 ---
-The core of SolCerberus is the APP, which manages roles and permissions and enforces the 
+The core of SolCerberus is the app, which manages roles and permissions and enforces the 
 access rules for a Solana program.
 
-1. Go to the SC manager: https://solcerberus.com/app
-2. Click Create New App
-3. Select a name for the app 
+1. Go to the [SC manager](https://solcerberus.com/app)
+2. Click **Create New App**
+3. Type a name for the app 
 4. Optional: Enter the address for a recovery wallet
 5. Click Accept and sign the transaction
 
@@ -31,8 +31,7 @@ access rules for a Solana program.
 We strongly recommend entering a recovery wallet that is independent of the main wallet.
 
 {: .note}
-If you're using SolCerberus as part of another application, the SolCerberus app might be created 
-for you automatically through that application.
+If you're using SolCerberus as part of another application, the SolCerberus app might be created for you automatically through that application.
 
 ---
 
@@ -41,9 +40,9 @@ for you automatically through that application.
 [SC Manager]
 </div>
 <div markdown="1">
-[Update Sol Cerberus APP]
+[Update Sol Cerberus app]
 </div>
 </div>
 
 [SC Manager]: /docs/sc-manager
-[Update Sol Cerberus APP]: ../update-sol-cerberus-app
+[Update Sol Cerberus app]: ../update-sol-cerberus-app

@@ -23,7 +23,19 @@ Permission Rules are the link that defines what the holder of a specific role ca
 ## Resources and Permissions
 The permission defines which action can be performed on which resource by which role. Sol Cerberus allows defining any combination of roles, resources and permissions, allowing fine-grained access management. 
 
-Permissions can be added as temporary by clicking the checkbox when creating them.
+## Assign rule
+Inside your SC app:
+
+- Click on the **Permissions** section.
+- Click New permission.
+- Enter a `Role`. 
+- Enter a `Resource`. 
+- Enter a `Permission`. 
+- Click on `Save changes` to upload changes to the blockchain.
+
+#### Temporary Permissions
+Permissions can be temporary, click the `Temporary` checkbox and set an UTC time at which the rule will expire. 
+
 
 {: .note }
 Example. Allow guests to open the door, assign a permission rule as... 

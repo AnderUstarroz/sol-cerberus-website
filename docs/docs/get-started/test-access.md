@@ -66,7 +66,7 @@ if (solCerberus.hasPerm("Square", "Add")){
     }
 }
 ```
-In this example we have created an instance of our [SC APP](../setup#create-sol-cerberus-app) in Javascript using:
+In this example we have created an instance of our [SC app](../setup#create-sol-cerberus-app) in Javascript using:
 
 -  [`new SolCerberus()`](https://js-sdk.solcerberus.com/classes/SolCerberus.html#constructor)
   
@@ -133,7 +133,7 @@ Check out a [working example](https://github.com/AnderUstarroz/sol-cerberus-demo
 
 
 {: .warning }
-The method `solCerberus.login({nfts:[]})` accepts an array of NFTs: `[NFTMintAddress, CollectionMintAddress]`, therefore it can retrieve the roles for several addresses at once, but we recommend not to use more than 2 or 3 addresses at once. Specially if caching is disabled in your SC APP, as it could affect performance and be expensive in terms of RPC network usage.<br/><br/>**Ideally users should choose which NFT would use to authenticate**.
+The method `solCerberus.login({nfts:[]})` accepts an array of NFTs: `[NFTMintAddress, CollectionMintAddress]`, therefore it can retrieve the roles for several addresses at once, but we recommend not to use more than 2 or 3 addresses at once. Specially if caching is disabled in your SC app, as it could affect performance and be expensive in terms of RPC network usage.<br/><br/>**Ideally users should choose which NFT would use to authenticate**.
 
 ---
 

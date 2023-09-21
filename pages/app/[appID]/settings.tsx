@@ -178,7 +178,7 @@ export default function Settings({ cluster, router }) {
         setSolCerberus(sc);
         setApp(appData);
       });
-      appIsEmpty(sc); // Empty APPs can be deleted
+      appIsEmpty(sc); // Empty apps can be deleted
     })();
 
     // Cleanup SolCerberus
@@ -188,9 +188,9 @@ export default function Settings({ cluster, router }) {
   return (
     <>
       <Head>
-        <title>Sol Cerberus APP settings</title>
+        <title>Sol Cerberus app settings</title>
         <link rel="icon" href="/favicon.ico" />
-        <meta name="description" content={`Sol Cerberus APP ${section}`} />
+        <meta name="description" content={`Sol Cerberus app ${section}`} />
       </Head>
       <div className={`page ${styles.container}`}>
         {!!router.query.appID && (
@@ -210,7 +210,7 @@ export default function Settings({ cluster, router }) {
                     <Button
                       className="aligned gap5"
                       cType="transparent"
-                      title="Copy APP ID"
+                      title="Copy app ID"
                       onClick={() => {
                         navigator.clipboard.writeText(app.id.toBase58());
                         flashMsg("APP ID copied", "info", 2000);
@@ -241,7 +241,7 @@ export default function Settings({ cluster, router }) {
                         cType="info"
                         className="icon1"
                         data-tooltip-id="main-tooltip"
-                        data-tooltip-content="Label to identify the APP."
+                        data-tooltip-content="Label to identify the app."
                         data-tooltip-place="top"
                       />
                     </label>
@@ -286,7 +286,7 @@ export default function Settings({ cluster, router }) {
                         cType="info"
                         className="icon1"
                         data-tooltip-id="main-tooltip"
-                        data-tooltip-html="The admin wallet with full<br />privileges for managing the APP."
+                        data-tooltip-html="The admin wallet with full<br />privileges for managing the app."
                       />
                     </label>
                     <label className="overlap fullCol">
@@ -309,7 +309,7 @@ export default function Settings({ cluster, router }) {
                         cType="info"
                         className="icon1"
                         data-tooltip-id="main-tooltip"
-                        data-tooltip-html="Backup wallet allowed to change<br /> the APP Authority in case the<br /> original is lost or stolen."
+                        data-tooltip-html="Backup wallet allowed to change<br /> the app Authority in case the<br /> original is lost or stolen."
                       />
                     </label>
                   </div>
@@ -321,7 +321,7 @@ export default function Settings({ cluster, router }) {
                           data-tooltip-html={
                             isEmpty
                               ? null
-                              : "The APP cannot be deleted <br />because is not empty. All<br /><strong>Roles</strong> and <strong>Permissions</strong><br />must be deleted first."
+                              : "The app cannot be deleted <br />because is not empty. All<br /><strong>Roles</strong> and <strong>Permissions</strong><br />must be deleted first."
                           }
                           data-tooltip-variant="error"
                         >
@@ -351,27 +351,34 @@ export default function Settings({ cluster, router }) {
           setIsOpen={setModals}
         >
           <>
-            <h3>Delete APP</h3>
-            <p className="mb-big">
-              Deleting the APP "<strong>{app.name}</strong>" is permanent and
-              cannot be undone. Are you sure you want to continue?
-            </p>
-            <div className="aligned end">
-              <Button
-                className={"button2"}
-                onClick={() => handleDeleteApp()}
-                disabled={!!Object.keys(appErrors).length}
-              >
-                Delete
-              </Button>
-              <Button
-                className="button1"
-                onClick={() => setModals({ ...modals, delete: false })}
-              >
-                Cancel
-              </Button>
-            </div>
+            <h3>Delete app</h3>
+            {loading ? (
+              <Spinner />
+            ) : (
+              <div>
+                <p className="mb-big">
+                  Deleting the app "<strong>{app.name}</strong>" is permanent
+                  and cannot be undone. Are you sure you want to continue?
+                </p>
+                <div className="aligned end">
+                  <Button
+                    className={"button2"}
+                    onClick={() => handleDeleteApp()}
+                    disabled={!!Object.keys(appErrors).length}
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    className="button1"
+                    onClick={() => setModals({ ...modals, delete: false })}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
           </>
+
           <Tooltip id="modal-tooltip" />
         </Modal>
       )}

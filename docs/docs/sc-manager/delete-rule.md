@@ -19,7 +19,15 @@ nav_order: 7
 {:toc}
 
 ---
-To delete permission rules, simply click the red X next to each rule. 
+To delete permission rules, follow these steps within your SC app:
+
+- Click on the **Permissions** section.
+- Click the red `X` next to each rule.
+- Click on `Save changes` to upload changes to the blockchain.
+ 
+
+{: .note }
+Deleting a rule releases blockchain space, refunding the corresponding account rent back to your wallet.
 
 ---
 
@@ -31,5 +39,5 @@ To delete permission rules, simply click the red X next to each rule.
 </div>
 </div>
 
-[Delete Sol Cerberus APP]: ../delete-sol-cerberus-app
+[Delete Sol Cerberus app]: ../delete-sol-cerberus-app
 [Add Rule]: ../add-rule

@@ -261,9 +261,9 @@ export default function Permissions({ router, cluster }) {
   return (
     <>
       <Head>
-        <title>Sol Cerberus APP permissions</title>
+        <title>Sol Cerberus app permissions</title>
         <link rel="icon" href="/favicon.ico" />
-        <meta name="description" content={`Sol Cerberus APP ${section}`} />
+        <meta name="description" content={`Sol Cerberus app ${section}`} />
       </Head>
       <div className={`page ${styles.container}`}>
         {!!router.query.appID && (

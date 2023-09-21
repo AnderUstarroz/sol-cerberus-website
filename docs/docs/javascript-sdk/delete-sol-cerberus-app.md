@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Delete Sol Cerberus APP
+title: Delete Sol Cerberus app
 parent: Javascript SDK
 nav_order: 3
 ---
 
-# Delete Sol Cerberus APP (JS SDK)
+# Delete Sol Cerberus app (JS SDK)
 {: .no_toc }
 
 ---
@@ -19,10 +19,10 @@ nav_order: 3
 
 ---
 
-Sol Cerberus APPs can be deleted **recovering the rent which was initially payed in SOL**. The [`solCerberus.deleteApp()`] method provided by the [JS SDK], supports the following params:
+Sol Cerberus apps can be deleted **recovering the rent which was initially payed in SOL**. The [`solCerberus.deleteApp()`] method provided by the [JS SDK], supports the following params:
 
 {: .important }
-Please ensure to first remove all Roles and Rules within the APP to recover 100% of your SOL, otherwise you won't be able to delete the Rules and Roles after deleting the APP.
+Please ensure to first remove all Roles and Rules within the app to recover 100% of your SOL, otherwise you won't be able to delete the Rules and Roles after deleting the app.
 
 
 ## solCerberus.deleteApp()
@@ -39,7 +39,7 @@ Please ensure to first remove all Roles and Rules within the APP to recover 100%
 
 
 ### With Javascript:
-Minimum example on how to delete an APP using plain Javascript:
+Minimum example on how to delete an app using plain Javascript:
 
 ```js
 import { Keypair, PublicKey, Connection, clusterApiUrl} from "@solana/web3.js";
@@ -53,12 +53,12 @@ const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
 const wallet = Keypair.fromSecretKey(Uint8Array.from([174, 47, ...]));
  
 const solCerberus = new SolCerberus(connection, wallet, {appId: new PublicKey("PASTE_YOUR_SOL_CERBERUS_APP_ID_HERE")});
-// Delete existing Sol Cerberus APP on-chain:
+// Delete existing Sol Cerberus app on-chain:
 await solCerberus.deleteApp() // Async func
 ```
 
 ### With React:
-Small example on how to delete an existing APP with React:
+Small example on how to delete an existing app with React:
 
 ```jsx
 import React, { startTransition, useEffect, useState } from "react";
@@ -118,7 +118,7 @@ export default function MyReactComponent({ router }) {
         <div>
           {!!app && (
             <button onClick={handleDeleteApp}>
-              Delete APP: {solCerberus.appId.toBase58()}
+              Delete app: {solCerberus.appId.toBase58()}
             </button>
           )}
           {!app && <div>APP already deleted.</div>}
@@ -133,7 +133,7 @@ export default function MyReactComponent({ router }) {
 
 <div class="prev-next">
 <div markdown="1">
-[Update Sol Cerberus APP]
+[Update Sol Cerberus app]
 </div>
 <div markdown="1">
 [Assign Role]
@@ -142,5 +142,5 @@ export default function MyReactComponent({ router }) {
 
 [`solCerberus.deleteApp()`]: https://js-sdk.solcerberus.com/classes/SolCerberus.html#deleteApp
 [JS SDK]: https://www.npmjs.com/package/sol-cerberus-js
-[Update Sol Cerberus APP]: ../update-sol-cerberus-app
+[Update Sol Cerberus app]: ../update-sol-cerberus-app
 [Assign Role]: ../assign-role

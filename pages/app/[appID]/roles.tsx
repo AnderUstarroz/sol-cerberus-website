@@ -294,9 +294,9 @@ export default function Roles({ router, cluster }) {
   return (
     <>
       <Head>
-        <title>Sol Cerberus APP Roles</title>
+        <title>Sol Cerberus app Roles</title>
         <link rel="icon" href="/favicon.ico" />
-        <meta name="description" content="Sol Cerberus APP roles" />
+        <meta name="description" content="Sol Cerberus app roles" />
       </Head>
       <div className={`page ${styles.container}`}>
         {!!router.query.appID && (

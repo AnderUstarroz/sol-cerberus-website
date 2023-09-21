@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Update Sol Cerberus APP
+title: Update Sol Cerberus app
 parent: SC Manager
 nav_order: 2
 ---
 
-# Update Sol Cerberus APP (SC Manager)
+# Update Sol Cerberus app (SC Manager)
 {: .no_toc }
 
 ---
@@ -42,12 +42,12 @@ Transfering the authority is a nice way to move control from one of your wallets
 
 <div class="prev-next">
 <div markdown="1">
-[Create Sol Cerberus APP]
+[Create Sol Cerberus app]
 </div>
 <div markdown="1">
-[Delete Sol Cerberus APP]
+[Delete Sol Cerberus app]
 </div>
 </div>
 
-[Create Sol Cerberus APP]: ../create-sol-cerberus-app
-[Delete Sol Cerberus APP]: ../delete-sol-cerberus-app
+[Create Sol Cerberus app]: ../create-sol-cerberus-app
+[Delete Sol Cerberus app]: ../delete-sol-cerberus-app

@@ -197,7 +197,7 @@ Check out a real world examples from our [demo program]:
 
 <div class="prev-next">
 <div markdown="1">
-[Delete Sol Cerberus APP]
+[Delete Sol Cerberus app]
 </div>
 <div markdown="1">
 [Delete Assigned Role]
@@ -210,5 +210,5 @@ Check out a real world examples from our [demo program]:
 [Assigning role to specific wallet]: https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/2_square.ts#L23-L27
 [Assigning role to specific NFT]: https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/3_circle.ts#L36-L39
 [Assigning role to an entire NFT collection]: https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/4_triangle.ts#L47-L51
-[Delete Sol Cerberus APP]: ../delete-sol-cerberus-app
+[Delete Sol Cerberus app]: ../delete-sol-cerberus-app
 [Delete Assigned Role]: ../delete-assigned-role

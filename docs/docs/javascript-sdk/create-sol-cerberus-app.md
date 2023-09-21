@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Create Sol Cerberus APP
+title: Create Sol Cerberus app
 parent: Javascript SDK
 nav_order: 1
 ---
 
-# Create Sol Cerberus APP (JS SDK)
+# Create Sol Cerberus app (JS SDK)
 {: .no_toc }
 
 ---
@@ -19,11 +19,11 @@ nav_order: 1
 
 ---
 
-The Sol Cerberus APPs can be created in the blockchain using the [`solCerberus.initializeApp()`] method provided by the [JS SDK], it supports the following params:
+The Sol Cerberus apps can be created in the blockchain using the [`solCerberus.initializeApp()`] method provided by the [JS SDK], it supports the following params:
 
 ## solCerberus.initializeApp()
 
-- `name` A name to identify your APP (up to 16 characters).
+- `name` A name to identify your app (up to 16 characters).
 - `recovery` (optional): Use a secondary wallet's public key as a backup in case the original wallet is stolen or lost.
 - `options` (optional): Additional parameters to customize behavior:
   - `cached` (optional) Boolean: Wether the Roles and Permissions should be cached on client side.
@@ -37,7 +37,7 @@ The Sol Cerberus APPs can be created in the blockchain using the [`solCerberus.i
 
 
 ### With Javascript:
-Minimum example on how to create the APP with plain Javascript:
+Minimum example on how to create the app with plain Javascript:
 
 ```js
 import { Keypair, PublicKey, Connection, clusterApiUrl} from "@solana/web3.js";
@@ -49,7 +49,7 @@ import * as anchor from "@project-serum/anchor";
 const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
 /** 
  * Generate a new random Private key (Remember to save this keypair, otherwise 
- * you won't be able to access the APP anymore). 
+ * you won't be able to access the app anymore). 
  * 
  **/
 const wallet = Keypair.generate() // Using a random private key 
@@ -67,13 +67,13 @@ const wallet = Keypair.generate() // Using a random private key
  **/
 
 const solCerberus = new SolCerberus(connection, wallet);
-// Create Sol Cerberus APP on-chain:
+// Create Sol Cerberus app on-chain:
 await solCerberus.initializeApp("myApp", null, {cached: false})  // Async func
-console.log(`My APP ID is: ${solCerberus.appId.toBase58()}`)
+console.log(`My app ID is: ${solCerberus.appId.toBase58()}`)
 ```
 
 ### With React:
-Minimum example on how to create the APP with React:
+Minimum example on how to create the app with React:
 
 ```jsx
 import React, { startTransition, useEffect, useState } from "react";
@@ -98,7 +98,7 @@ export default function MyReactComponent({ router }) {
     try {
       const appData = await solCerberus.getAppData();
       startTransition(
-        () => setApp(appData) // Will fail if APP doesn't exist yet
+        () => setApp(appData) // Will fail if app doesn't exist yet
       );
     } catch {}
   };
@@ -133,11 +133,11 @@ export default function MyReactComponent({ router }) {
   return (
     <div>
       {!!solCerberus && !app && (
-        <button onClick={handleCreateApp}>Create Sol Cerberus APP</button>
+        <button onClick={handleCreateApp}>Create Sol Cerberus app</button>
       )}
       {!!app && (
         <div>
-          The APP ID is <strong>{app.id.toBase58()}</strong>
+          The app ID is <strong>{app.id.toBase58()}</strong>
         </div>
       )}
     </div>
@@ -145,11 +145,11 @@ export default function MyReactComponent({ router }) {
 }
 ```
 
-Check out a working example from our demo program: [Create APP](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/1_initialize_demo.ts#L48-L50).
+Check out a working example from our demo program: [Create app](https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/tests/1_initialize_demo.ts#L48-L50).
 
 
 {: .note }
-Remember to write down your **APP ID** after creating a Sol Cerberus APP, you will need it to access the instance afterwards. If you forgot you can always visit the [Sol Cerberus Manager] to see all your existing APPs.
+Remember to write down your **APP ID** after creating a Sol Cerberus app, you will need it to access the instance afterwards. If you forgot you can always visit the [Sol Cerberus Manager] to see all your existing apps.
 
 ---
 
@@ -158,7 +158,7 @@ Remember to write down your **APP ID** after creating a Sol Cerberus APP, you wi
 [Javascript SDK]
 </div>
 <div markdown="1">
-[Update Sol Cerberus APP]
+[Update Sol Cerberus app]
 </div>
 </div>
 
@@ -167,4 +167,4 @@ Remember to write down your **APP ID** after creating a Sol Cerberus APP, you wi
 [web3.js package]: https://solana-labs.github.io/solana-web3.js/
 [Sol Cerberus Manager]: https://solcerberus.com/app
 [Javascript SDK]: /docs/javascript-sdk
-[Update Sol Cerberus APP]: ../update-sol-cerberus-app
+[Update Sol Cerberus app]: ../update-sol-cerberus-app

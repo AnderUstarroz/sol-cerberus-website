@@ -11,11 +11,11 @@ permalink: /docs/javascript-sdk
 
 ---
 
-In this section, we explore the [Sol Cerberus JavaScript library], a powerful tool that facilitates the interaction with the [Sol Cerberus on-chain program]. The library provides functions that allow you to manage your Sol Cerberus APP, including:
+In this section, we explore the [Sol Cerberus JavaScript library], a powerful tool that facilitates the interaction with the [Sol Cerberus on-chain program]. The library provides functions that allow you to manage your Sol Cerberus app, including:
 
-- Creating a Sol Cerberus APP
-- Updating a Sol Cerberus APP
-- Deleting a Sol Cerberus APP
+- Creating a Sol Cerberus app
+- Updating a Sol Cerberus app
+- Deleting a Sol Cerberus app
   
 Additionally, it enables efficient role and permission management. You'll learn how to:
 
@@ -34,10 +34,10 @@ Finally, we'll demonstrate how to utilize the library's functionality to validat
 <div markdown="1">
 </div>
 <div markdown="1">
-[Create Sol Cerberus APP]
+[Create Sol Cerberus app]
 </div>
 </div>
 
-[Create Sol Cerberus APP]: /docs/javascript-sdk/create-sol-cerberus-app
+[Create Sol Cerberus app]: /docs/javascript-sdk/create-sol-cerberus-app
 [Sol Cerberus JavaScript library]: https://github.com/AnderUstarroz/sol-cerberus-js
 [Sol Cerberus on-chain program]: https://github.com/AnderUstarroz/sol-cerberus

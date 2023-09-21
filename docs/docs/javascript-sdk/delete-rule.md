@@ -147,5 +147,5 @@ export default function MyReactComponent({ router }) {
 
 [`solCerberus.deleteRule()`]: https://js-sdk.solcerberus.com/classes/SolCerberus.html#deleteRule
 [JS SDK]: https://www.npmjs.com/package/sol-cerberus-js
-[Delete Sol Cerberus APP]: ../delete-sol-cerberus-app
+[Delete Sol Cerberus app]: ../delete-sol-cerberus-app
 [Add Rule]: ../add-rule

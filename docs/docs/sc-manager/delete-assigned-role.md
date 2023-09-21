@@ -21,11 +21,20 @@ nav_order: 5
 
 ---
 ## Remove access
-To remove a role from an address, expand the role and remove the appropriate row.
+Within your SC app:
+
+- Click on the **Roles** section.
+- Expand the role.
+- Click the red `X` button on the corresponding row.
+- Click on `Save changes` to upload changes to the blockchain.
+
 
 {: .note }
 The interface will still show role assignments that have expired since the data remains on the blockchain.
 They can safely be deleted.
+
+{: .note }
+Deleting a role releases blockchain space, refunding the corresponding account rent back to your wallet.
 
 ---
 <div class="prev-next">
