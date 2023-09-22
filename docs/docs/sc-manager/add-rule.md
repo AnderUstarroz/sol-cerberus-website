@@ -24,7 +24,7 @@ Permission Rules are the link that defines what the holder of a specific role ca
 The permission defines which action can be performed on which resource by which role. Sol Cerberus allows defining any combination of roles, resources and permissions, allowing fine-grained access management. 
 
 ## Assign rule
-Inside your SC app:
+Inside your [SC app](https://solcerberus.com/app):
 
 - Click on the **Permissions** section.
 - Click New permission.

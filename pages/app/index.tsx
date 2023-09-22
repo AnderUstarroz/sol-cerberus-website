@@ -13,7 +13,6 @@ import { AppError, validateInput } from "../../components/validation/app";
 import { flashMsg } from "../../components/utils/helpers";
 import { NewAPPType, NewAPPErrorType } from "../../types/app";
 import Link from "next/link";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 
 const ConnectWallet = dynamic(() => import("../../components/connect-wallet"));
 const Spinner = dynamic(() => import("../../components/spinner"));
@@ -123,13 +122,6 @@ export default function Apps({ router, cluster }) {
       return clearStates();
     }
     if (solCerberus) return;
-    if (cluster === WalletAdapterNetwork.Mainnet) {
-      flashMsg(
-        "Sol Cerberus is only available on Devnet and Testnet (Mainnet will be available when Solana v1.16 is deployed)",
-        "error",
-        10000
-      );
-    }
     setSolCerberus(new SolCerberus(connection, wallet));
     return () => clearStates();
   }, [publicKey, router.isReady]);

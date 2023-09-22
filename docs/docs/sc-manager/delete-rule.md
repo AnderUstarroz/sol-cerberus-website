@@ -19,7 +19,7 @@ nav_order: 7
 {:toc}
 
 ---
-To delete permission rules, follow these steps within your SC app:
+To delete permission rules, follow these steps within your [SC app](https://solcerberus.com/app):
 
 - Click on the **Permissions** section.
 - Click the red `X` next to each rule.

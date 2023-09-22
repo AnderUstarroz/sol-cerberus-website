@@ -21,7 +21,7 @@ nav_order: 5
 
 ---
 ## Remove access
-Within your SC app:
+Within your [SC app](https://solcerberus.com/app):
 
 - Click on the **Roles** section.
 - Expand the role.

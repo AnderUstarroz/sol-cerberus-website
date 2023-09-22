@@ -26,7 +26,7 @@ In order to control access to an app, at least one Role is necessary. Roles are 
 - Everyone (using the `"*"` wildcard) 
 
 ## Assign role
-To assign a role, follow these steps inside your SC app:
+To assign a role, follow these steps inside your [SC app](https://solcerberus.com/app):
 
 - Click on **Roles** section.
 - Click Assign Role.
