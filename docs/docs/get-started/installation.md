@@ -28,7 +28,7 @@ Add the following dependencies into the `Cargo.toml` file of your Anchor program
 ```toml
 [dependencies]
 anchor-spl = { version = "0.28.0", features = ["metadata"] }
-sol-cerberus = { version = "0.1.7", features = ["cpi"] }
+sol-cerberus = { version = "0.1.11", features = ["cpi"] }
 solana-program = "1.16.8"
 ```
 

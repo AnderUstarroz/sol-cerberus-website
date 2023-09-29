@@ -1,11 +1,11 @@
 ---
 layout: default
-title: SC demo example
+title: SC test demo example
 parent: Testing
 nav_order: 1
 ---
 
-# SC Demo example
+# SC Test demo example
 {: .no_toc }
 
 ---
@@ -17,7 +17,7 @@ nav_order: 1
 
 ---
 
-The easiest to understand testing is by looking at the Sol Cerberus [Demo](https://demo.solcerberus.com/) program [tests examples](https://github.com/AnderUstarroz/sol-cerberus-demo/tree/main/tests). 
+The easiest to understand testing is by looking at the [tests examples](https://github.com/AnderUstarroz/sol-cerberus-demo/tree/main/tests) of the Sol Cerberus [Demo](https://demo.solcerberus.com/) program. 
 
 
 ## Create a Sol Cerberus instance

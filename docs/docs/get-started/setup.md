@@ -26,7 +26,8 @@ The Sol Cerberus app manages roles and permissions, enforcing the access rules i
 - [Create SC app using the JS SDK]
 
 {: .note }
-Use an independent SC app for each Solana program.
+Normally you would use an independent SC app for each Solana program, but you can also [use multiple SC apps](/docs/multi-sc-apps/), allowing your users to setup/manage their own access permissions.
+
 
 
 ## Adding SC app ID to an Anchor program
@@ -49,8 +50,6 @@ pub mod my_anchor_program {
 }
 ```
 
-Check out a [real world example] from our [demo program].
-
 
 ---
 
@@ -67,9 +66,5 @@ Check out a [real world example] from our [demo program].
 [Create SC app using the SC Manager]: /docs/sc-manager/create-sol-cerberus-app
 [Create SC app using the JS SDK]: /docs/javascript-sdk/create-sol-cerberus-app
 [Solana CLI]: https://docs.solana.com/es/wallet-guide/paper-wallet#seed-phrase-generation
-[JS SDK]: https://www.npmjs.com/package/sol-cerberus-js
-[web3.js package]: https://solana-labs.github.io/solana-web3.js/
-[real world example]: https://github.com/AnderUstarroz/sol-cerberus-demo/blob/main/programs/sol-cerberus-demo/src/lib.rs#L17
-[demo program]: https://demo.solcerberus.com/
 [Installation]: ../installation
 [Assign roles]: ../assign-roles

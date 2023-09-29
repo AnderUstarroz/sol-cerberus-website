@@ -80,8 +80,7 @@ Run your tests normally with `anchor test`.
 <div markdown="1">
 </div>
 <div markdown="1">
-[SC demo example]
+[SC test demo example](/docs/testing/sc-test-demo-example)
 </div>
 </div>
 
-[SC demo example]: /docs/testing/sc-demo-example

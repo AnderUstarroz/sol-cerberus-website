@@ -28,7 +28,7 @@ access rules for a Solana program.
 5. Click Accept and sign the transaction
 
 {: .important }
-We strongly recommend entering a recovery wallet that is independent of the main wallet.
+We strongly recommend entering a recovery wallet, which must  be different from the main wallet.
 
 {: .note}
 If you're using SolCerberus as part of another application, the SolCerberus app might be created for you automatically through that application.

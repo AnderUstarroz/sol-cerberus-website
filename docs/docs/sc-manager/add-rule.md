@@ -18,7 +18,7 @@ nav_order: 6
 {:toc}
 
 ---
-Permission Rules are the link that defines what the holder of a specific role can do.
+The permission rules define which actions are allowed to the holder of a specific role.
 
 ## Resources and Permissions
 The permission defines which action can be performed on which resource by which role. Sol Cerberus allows defining any combination of roles, resources and permissions, allowing fine-grained access management. 
