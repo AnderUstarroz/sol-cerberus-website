@@ -26,7 +26,7 @@ The Sol Cerberus app manages roles and permissions, enforcing the access rules i
 - [Create SC app using the JS SDK]
 
 {: .note }
-Normally you would use an independent SC app for each Solana program, but you can also [use multiple SC apps](/docs/multi-sc-apps/), allowing your users to setup/manage their own access permissions.
+Normally you would use an independent SC app for each Solana program, but you can also [use multiple SC apps](/docs/multi-sc-apps), allowing your users to setup/manage their own access permissions.
 
 
 

@@ -27,10 +27,20 @@ Add the following dependencies into the `Cargo.toml` file of your Anchor program
 
 ```toml
 [dependencies]
-anchor-spl = { version = "0.28.0", features = ["metadata"] }
-sol-cerberus = { version = "0.1.11", features = ["cpi"] }
-solana-program = "1.16.8"
+anchor-spl = { version = "0.29.0", features = ["metadata"] }
+sol-cerberus = { version = "0.1.12", features = ["cpi"] }
+solana-program = "1.16.20"
+
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
 ```
+And also the `idl-build` into the `features` section:
+
+```toml
+[features]
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+```
+
 
 ## Frontend installation
 
@@ -42,7 +52,7 @@ To install the package add the following dependencies into the `package.json` fi
 {
   "dependencies": {
     "sol-cerberus-js": "latest",
-    "@metaplex-foundation/js": "^0.19.4" // Optional (if planning to use NFTs)
+    "@metaplex-foundation/js": "^0.20.1" // Optional (if planning to use NFTs)
   },
 }
 ```
